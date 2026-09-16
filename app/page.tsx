@@ -35,6 +35,7 @@ export default function HomePage() {
             alt="Event hall"
             fill
             priority
+            sizes="100vw"
             className="object-cover opacity-40"
           />
         </div>
@@ -136,6 +137,7 @@ export default function HomePage() {
                   src={src}
                   alt={`Gallery image ${i + 1}`}
                   fill
+                  sizes="(max-width: 640px) 100vw, 33vw"
                   className="object-cover transition-transform duration-700 group-hover:scale-110"
                 />
               </div>

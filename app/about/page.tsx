@@ -24,6 +24,7 @@ export default function AboutPage() {
             src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1000&q=80"
             alt="Baseline Events Center"
             fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover"
           />
         </div>

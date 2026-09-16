@@ -1,31 +1,14 @@
 // app/booking/page.tsx
-// The booking page. 3 parts:
-//   1. Calendar (green = free, red = booked)
-//   2. Booking form (name, email, phone, event type)
-//   3. Bank details (shown after form submission)
-//
-// For now, everything is client-side only. Backend wires up tomorrow.
+// Booking page. Now wired to Supabase:
+//   - Calendar reads real booked dates
+//   - Form writes real bookings to the database
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createBooking, getBookedDates } from "@/lib/actions";
 
-// ---------- FAKE DATA (replaced by Supabase tomorrow) ----------
-// Pretend these dates are already booked by offline clients.
-// Format: YYYY-MM-DD
-const BOOKED_DATES = [
-  "2026-10-04",
-  "2026-10-11",
-  "2026-10-18",
-  "2026-10-25",
-  "2026-11-08",
-  "2026-11-22",
-  "2026-12-14",
-  "2026-12-25",
-  "2026-12-31",
-];
-
-// The client's bank details. These show after booking submission.
+// Placeholder bank details. We'll load the real ones in a later chunk.
 const BANK_DETAILS = {
   bank: "GTBank",
   accountName: "Baseline Events Center Ltd",
@@ -33,45 +16,73 @@ const BANK_DETAILS = {
   depositAmount: "₦100,000",
 };
 
-// ---------- THE PAGE ----------
 export default function BookingPage() {
-  // Which month are we viewing? Defaults to today's month.
   const [viewDate, setViewDate] = useState(new Date());
-  // Which date did the client pick? null until they click one.
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  // Has the client submitted the form yet?
   const [submitted, setSubmitted] = useState(false);
+  const [bookedDates, setBookedDates] = useState<string[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Helper: format a Date object as "YYYY-MM-DD" (matches our booked dates)
-  const toKey = (d: Date) => d.toISOString().split("T")[0];
+  // Form field values
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    event_type: "",
+  });
 
-  // Build the calendar grid for the current viewDate
+  // Load booked dates when the page first mounts
+  useEffect(() => {
+    getBookedDates().then(setBookedDates).catch(console.error);
+  }, []);
+
+  const toKey = (d: Date) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}-${m}-${day}`;
+  };
+
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
-  const firstDay = new Date(year, month, 1).getDay(); // 0=Sun, 1=Mon, etc.
+  const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-  // Empty cells before day 1 so the grid lines up with the weekday row
   const blanks = Array(firstDay).fill(null);
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const cells = [...blanks, ...days];
 
   const monthName = viewDate.toLocaleString("en-US", { month: "long" });
 
-  // Move forward / backward a month
   const prevMonth = () => setViewDate(new Date(year, month - 1, 1));
   const nextMonth = () => setViewDate(new Date(year, month + 1, 1));
 
-  // When the form is submitted, flip to the "bank details" view
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!selectedDate) return;
+
+    setLoading(true);
+    setError(null);
+
+    const result = await createBooking({
+      event_date: selectedDate,
+      ...form,
+    });
+
+    setLoading(false);
+
+    if (!result.success) {
+      setError(result.error ?? "Something went wrong. Please try again.");
+      return;
+    }
+
     setSubmitted(true);
   };
 
   return (
     <main className="min-h-screen bg-cream py-20">
       <div className="mx-auto max-w-4xl px-6">
-        {/* Page heading */}
         <div className="text-center">
           <h1 className="font-heading text-5xl font-bold text-plum">
             Book Your Date
@@ -81,9 +92,8 @@ export default function BookingPage() {
           </p>
         </div>
 
-        {/* ---------- CALENDAR ---------- */}
+        {/* CALENDAR */}
         <div className="mt-12 rounded-2xl bg-white p-6 shadow-lg md:p-10">
-          {/* Month navigation */}
           <div className="mb-6 flex items-center justify-between">
             <button
               onClick={prevMonth}
@@ -102,7 +112,6 @@ export default function BookingPage() {
             </button>
           </div>
 
-          {/* Weekday header row */}
           <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold uppercase tracking-wider text-plum/50">
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
               <div key={d} className="py-2">
@@ -111,20 +120,14 @@ export default function BookingPage() {
             ))}
           </div>
 
-          {/* Calendar grid */}
           <div className="grid grid-cols-7 gap-1">
             {cells.map((day, i) => {
-              // Empty cell (blank before day 1)
-              if (day === null) {
-                return <div key={`blank-${i}`} />;
-              }
+              if (day === null) return <div key={`blank-${i}`} />;
 
-              // Build this day's key in "YYYY-MM-DD" format
               const key = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
-              const isBooked = BOOKED_DATES.includes(key);
+              const isBooked = bookedDates.includes(key);
               const isSelected = selectedDate === key;
 
-              // Days before today can't be booked
               const today = new Date();
               today.setHours(0, 0, 0, 0);
               const thisDay = new Date(year, month, day);
@@ -149,7 +152,6 @@ export default function BookingPage() {
             })}
           </div>
 
-          {/* Legend */}
           <div className="mt-6 flex flex-wrap gap-6 text-xs text-plum/60">
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded bg-green-50 border border-green-200" />
@@ -166,7 +168,7 @@ export default function BookingPage() {
           </div>
         </div>
 
-        {/* ---------- FORM OR BANK DETAILS ---------- */}
+        {/* FORM OR CONFIRMATION */}
         {!submitted ? (
           <form
             onSubmit={handleSubmit}
@@ -186,22 +188,30 @@ export default function BookingPage() {
                 type="text"
                 placeholder="Full name"
                 required
+                value={form.name}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
                 className="rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
               />
               <input
                 type="email"
                 placeholder="Email address"
                 required
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
                 className="rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
               />
               <input
                 type="tel"
                 placeholder="Phone number"
                 required
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
                 className="rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
               />
               <select
                 required
+                value={form.event_type}
+                onChange={(e) => setForm({ ...form, event_type: e.target.value })}
                 className="rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
               >
                 <option value="">Type of event</option>
@@ -213,16 +223,25 @@ export default function BookingPage() {
               </select>
             </div>
 
+            {error && (
+              <div className="mt-4 rounded-lg bg-red-100 p-3 text-sm text-red-800">
+                {error}
+              </div>
+            )}
+
             <button
               type="submit"
-              disabled={!selectedDate}
+              disabled={!selectedDate || loading}
               className="mt-8 w-full rounded-full bg-accent py-4 font-semibold text-white shadow-lg transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {selectedDate ? "Continue to Payment →" : "Select a date first"}
+              {loading
+                ? "Saving..."
+                : selectedDate
+                  ? "Continue to Payment →"
+                  : "Select a date first"}
             </button>
           </form>
         ) : (
-          // ---------- BANK DETAILS (shown after submission) ----------
           <div className="mt-10 rounded-2xl bg-white p-6 shadow-lg md:p-10">
             <div className="text-center">
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl">
@@ -275,6 +294,7 @@ export default function BookingPage() {
               onClick={() => {
                 setSubmitted(false);
                 setSelectedDate(null);
+                setForm({ name: "", email: "", phone: "", event_type: "" });
               }}
               className="mt-6 w-full rounded-full border border-plum/20 py-3 text-sm text-plum/70 hover:bg-plum hover:text-cream"
             >
