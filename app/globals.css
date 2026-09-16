@@ -1,0 +1,36 @@
+/* app/globals.css
+   In Tailwind v4, this file is BOTH the CSS file AND the config file.
+   We import Tailwind, then declare our brand colors and fonts.
+   Everything we name here becomes a class like bg-purple, text-accent, etc. */
+
+@import "tailwindcss";
+
+/* Our Baseline Events Center brand kit.
+   Each --color-X creates Tailwind classes:
+   bg-X, text-X, border-X, etc. */
+@theme {
+  --color-purple: #B9A5E3;   /* Light Purple — primary */
+  --color-cream:  #FBF6EF;   /* Cream — page background */
+  --color-accent: #E8543A;   /* Orange-Red — CTAs */
+  --color-plum:   #2E2340;   /* Deep Plum — text, footer */
+  --color-ink:    #1A1A1A;   /* Near-black — body text */
+
+  /* Font families. These pull from CSS variables set in layout.tsx. */
+  --font-heading: var(--font-heading), serif;
+  --font-body:    var(--font-body), sans-serif;
+
+  /* Custom animation: gentle fade-up for hero content. */
+  --animate-fade-up: fade-up 0.8s ease-out forwards;
+
+  @keyframes fade-up {
+    0%   { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+}
+
+/* Base styles applied to the whole site. */
+body {
+  background-color: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+}
