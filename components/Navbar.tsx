@@ -12,12 +12,13 @@ export default function Navbar() {
 
   // The nav links. Kept in an array so we can loop over them
   // instead of typing each one twice (desktop + mobile).
-  const links = [
-    { href: "/",        label: "Home" },
-    { href: "/about",   label: "About" },
-    { href: "/booking", label: "Book Now" },
-    { href: "/contact", label: "Contact" },
-  ];
+const links = [
+  { href: "/",        label: "Home" },
+  { href: "/halls",   label: "Halls" },
+  { href: "/about",   label: "About" },
+  { href: "/booking", label: "Book Now" },
+  { href: "/contact", label: "Contact" },
+];
 
   return (
     <header className="sticky top-0 z-50 bg-navy text-cream shadow-md">

@@ -5,12 +5,13 @@ import Link from "next/link";
 
 export default function Footer() {
   // Quick links — same idea as the navbar, listed once here.
-  const links = [
-    { href: "/",        label: "Home" },
-    { href: "/about",   label: "About" },
-    { href: "/booking", label: "Book Now" },
-    { href: "/contact", label: "Contact" },
-  ];
+const links = [
+  { href: "/",        label: "Home" },
+  { href: "/halls",   label: "Halls" },
+  { href: "/about",   label: "About" },
+  { href: "/booking", label: "Book Now" },
+  { href: "/contact", label: "Contact" },
+];
 
   return (
     <footer className="bg-navy text-cream">
