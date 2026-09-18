@@ -20,11 +20,11 @@ export default function Navbar() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-plum text-cream shadow-md">
+    <header className="sticky top-0 z-50 bg-navy text-cream shadow-md">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         {/* Logo / hall name — always links home */}
         <Link href="/" className="font-heading text-2xl font-bold tracking-wide">
-          Baseline <span className="text-accent">Events</span>
+          Baseline <span className="text-gold">Events</span>
         </Link>
 
         {/* Desktop links — hidden on small screens */}
@@ -33,7 +33,7 @@ export default function Navbar() {
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="text-sm uppercase tracking-widest transition-colors hover:text-accent"
+                className="text-sm uppercase tracking-widest transition-colors hover:text-gold"
               >
                 {link.label}
               </Link>
@@ -53,13 +53,13 @@ export default function Navbar() {
 
       {/* Mobile dropdown menu — only shows when open is true */}
       {open && (
-        <ul className="flex flex-col gap-4 bg-plum px-6 pb-6 md:hidden">
+        <ul className="flex flex-col gap-4 bg-navy px-6 pb-6 md:hidden">
           {links.map((link) => (
             <li key={link.href}>
               <Link
                 href={link.href}
                 onClick={() => setOpen(false)}
-                className="block text-sm uppercase tracking-widest hover:text-accent"
+                className="block text-sm uppercase tracking-widest hover:text-gold"
               >
                 {link.label}
               </Link>

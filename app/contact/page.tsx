@@ -13,9 +13,9 @@ export default function ContactPage() {
   return (
     <main className="bg-cream">
       {/* Header */}
-      <section className="bg-plum py-20 text-center text-cream">
+      <section className="bg-navy py-20 text-center text-cream">
         <h1 className="font-heading text-5xl font-bold md:text-6xl">
-          Get in <span className="text-accent">Touch</span>
+          Get in <span className="text-gold">Touch</span>
         </h1>
         <p className="mx-auto mt-4 max-w-2xl px-6 text-cream/70">
           Questions about booking? Reach us — we respond fast.
@@ -28,21 +28,21 @@ export default function ContactPage() {
           {/* Address */}
           <div className="rounded-2xl bg-white p-8 text-center shadow-sm transition-shadow hover:shadow-lg">
             <div className="text-4xl">📍</div>
-            <h3 className="mt-4 font-heading text-xl font-semibold text-plum">
+            <h3 className="mt-4 font-heading text-xl font-semibold text-navy">
               Visit Us
             </h3>
-            <p className="mt-3 text-sm text-plum/70">{contact.address}</p>
+            <p className="mt-3 text-sm text-navy/70">{contact.address}</p>
           </div>
 
           {/* Phone */}
           <div className="rounded-2xl bg-white p-8 text-center shadow-sm transition-shadow hover:shadow-lg">
             <div className="text-4xl">📞</div>
-            <h3 className="mt-4 font-heading text-xl font-semibold text-plum">
+            <h3 className="mt-4 font-heading text-xl font-semibold text-navy">
               Call Us
             </h3>
             <a
               href={`tel:${contact.phone.replace(/\s/g, "")}`}
-              className="mt-3 block text-sm text-plum/70 hover:text-accent"
+              className="mt-3 block text-sm text-navy/70 hover:text-gold"
             >
               {contact.phone}
             </a>
@@ -51,12 +51,12 @@ export default function ContactPage() {
           {/* Email */}
           <div className="rounded-2xl bg-white p-8 text-center shadow-sm transition-shadow hover:shadow-lg">
             <div className="text-4xl">✉️</div>
-            <h3 className="mt-4 font-heading text-xl font-semibold text-plum">
+            <h3 className="mt-4 font-heading text-xl font-semibold text-navy">
               Email Us
             </h3>
             <a
               href={`mailto:${contact.email}`}
-              className="mt-3 block text-sm text-plum/70 hover:text-accent"
+              className="mt-3 block text-sm text-navy/70 hover:text-gold"
             >
               {contact.email}
             </a>
@@ -64,11 +64,11 @@ export default function ContactPage() {
         </div>
 
         {/* WhatsApp CTA — the big one for Nigerian clients */}
-        <div className="mt-12 rounded-2xl bg-purple p-10 text-center text-plum">
+        <div className="mt-12 rounded-2xl bg-gold p-10 text-center text-navy">
           <h2 className="font-heading text-3xl font-bold">
             Prefer to Chat?
           </h2>
-          <p className="mt-3 text-plum/70">
+          <p className="mt-3 text-navy/70">
             Message us on WhatsApp — we usually reply within minutes.
           </p>
           <a

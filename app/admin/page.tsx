@@ -110,7 +110,7 @@ export default function AdminDashboard() {
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-cream">
-        <p className="text-plum/60">Loading dashboard...</p>
+        <p className="text-navy/60">Loading dashboard...</p>
       </main>
     );
   }
@@ -121,16 +121,16 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div>
-            <h1 className="font-heading text-4xl font-bold text-plum">
+            <h1 className="font-heading text-4xl font-bold text-navy">
               Dashboard
             </h1>
-            <p className="mt-1 text-sm text-plum/60">
+            <p className="mt-1 text-sm text-navy/60">
               Manage bookings for Baseline Events Center
             </p>
           </div>
           <button
             onClick={handleSignOut}
-            className="rounded-full border border-plum/20 px-5 py-2 text-sm hover:bg-plum hover:text-cream"
+            className="rounded-full border border-navy/20 px-5 py-2 text-sm hover:bg-navy hover:text-cream"
           >
             Sign Out
           </button>
@@ -139,20 +139,20 @@ export default function AdminDashboard() {
         {/* Stat cards */}
         <div className="mt-10 grid gap-4 sm:grid-cols-3">
           <div className="rounded-2xl bg-white p-6 shadow-sm">
-            <div className="text-3xl font-bold text-accent">
+            <div className="text-3xl font-bold text-gold">
               {bookings.filter((b) => b.status === "pending").length}
             </div>
-            <div className="mt-1 text-sm text-plum/60">Pending</div>
+            <div className="mt-1 text-sm text-navy/60">Pending</div>
           </div>
           <div className="rounded-2xl bg-white p-6 shadow-sm">
             <div className="text-3xl font-bold text-green-600">
               {bookings.filter((b) => b.status === "confirmed").length}
             </div>
-            <div className="mt-1 text-sm text-plum/60">Confirmed</div>
+            <div className="mt-1 text-sm text-navy/60">Confirmed</div>
           </div>
           <div className="rounded-2xl bg-white p-6 shadow-sm">
-            <div className="text-3xl font-bold text-plum">{blocked.length}</div>
-            <div className="mt-1 text-sm text-plum/60">Blocked Dates</div>
+            <div className="text-3xl font-bold text-navy">{blocked.length}</div>
+            <div className="mt-1 text-sm text-navy/60">Blocked Dates</div>
           </div>
         </div>
 
@@ -160,16 +160,16 @@ export default function AdminDashboard() {
 <section className="mt-12">
   <div className="flex flex-wrap items-center justify-between gap-4">
     <div>
-      <h2 className="font-heading text-2xl font-semibold text-plum">
+      <h2 className="font-heading text-2xl font-semibold text-navy">
         Bookings
       </h2>
-      <p className="mt-1 text-sm text-plum/60">
+      <p className="mt-1 text-sm text-navy/60">
         Confirm bookings after payment is received.
       </p>
     </div>
     <button
       onClick={() => setShowAddForm(!showAddForm)}
-      className="rounded-full bg-plum px-5 py-2 text-sm font-semibold text-cream hover:opacity-90"
+      className="rounded-full bg-navy px-5 py-2 text-sm font-semibold text-cream hover:opacity-90"
     >
       {showAddForm ? "✕ Cancel" : "+ Add Booking"}
     </button>
@@ -181,10 +181,10 @@ export default function AdminDashboard() {
       onSubmit={handleAddBooking}
       className="mt-6 rounded-2xl bg-white p-6 shadow-md"
     >
-      <h3 className="font-heading text-lg font-semibold text-plum">
+      <h3 className="font-heading text-lg font-semibold text-navy">
         New Booking (offline client)
       </h3>
-      <p className="mt-1 text-xs text-plum/60">
+      <p className="mt-1 text-xs text-navy/60">
         For walk-in or phone bookings. Saves as confirmed.
       </p>
 
@@ -196,7 +196,7 @@ export default function AdminDashboard() {
           onChange={(e) =>
             setAddForm({ ...addForm, event_date: e.target.value })
           }
-          className="rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
+          className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
         />
         <input
           type="text"
@@ -204,14 +204,14 @@ export default function AdminDashboard() {
           required
           value={addForm.name}
           onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
-          className="rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
+          className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
         />
         <input
           type="email"
           placeholder="Email (optional)"
           value={addForm.email}
           onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
-          className="rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
+          className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
         />
         <input
           type="tel"
@@ -219,7 +219,7 @@ export default function AdminDashboard() {
           required
           value={addForm.phone}
           onChange={(e) => setAddForm({ ...addForm, phone: e.target.value })}
-          className="rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
+          className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
         />
         <select
           required
@@ -227,7 +227,7 @@ export default function AdminDashboard() {
           onChange={(e) =>
             setAddForm({ ...addForm, event_type: e.target.value })
           }
-          className="rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
+          className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
         >
           <option value="">Type of event</option>
           <option>Wedding</option>
@@ -241,14 +241,14 @@ export default function AdminDashboard() {
           placeholder="Notes (optional)"
           value={addForm.notes}
           onChange={(e) => setAddForm({ ...addForm, notes: e.target.value })}
-          className="rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
+          className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
         />
       </div>
 
       <button
         type="submit"
         disabled={saving}
-        className="mt-5 rounded-full bg-accent px-8 py-3 font-semibold text-white shadow-lg hover:opacity-90 disabled:opacity-50"
+        className="mt-5 rounded-full bg-gold px-8 py-3 font-semibold text-white shadow-lg hover:opacity-90 disabled:opacity-50"
       >
         {saving ? "Saving..." : "Save Booking"}
       </button>
@@ -256,7 +256,7 @@ export default function AdminDashboard() {
   )}
 
           {bookings.length === 0 ? (
-            <div className="mt-6 rounded-2xl bg-white p-10 text-center text-plum/50 shadow-sm">
+            <div className="mt-6 rounded-2xl bg-white p-10 text-center text-navy/50 shadow-sm">
               No bookings yet.
             </div>
           ) : (
@@ -269,7 +269,7 @@ export default function AdminDashboard() {
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="min-w-0 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
-                        <h3 className="font-heading text-lg font-semibold text-plum">
+                        <h3 className="font-heading text-lg font-semibold text-navy">
                           {b.name}
                         </h3>
                         <span
@@ -284,7 +284,7 @@ export default function AdminDashboard() {
                           {b.status}
                         </span>
                       </div>
-                      <div className="mt-2 grid gap-1 text-sm text-plum/70 sm:grid-cols-2">
+                      <div className="mt-2 grid gap-1 text-sm text-navy/70 sm:grid-cols-2">
                         <div>📅 Event: <strong>{b.event_date}</strong></div>
                         <div>🎉 Type: {b.event_type}</div>
                         <div>✉️ {b.email}</div>
@@ -296,7 +296,7 @@ export default function AdminDashboard() {
                       {b.status === "pending" && (
                         <button
                           onClick={() => handleConfirm(b.id)}
-                          className="rounded-full bg-accent px-5 py-2 text-sm font-semibold text-white hover:opacity-90"
+                          className="rounded-full bg-gold px-5 py-2 text-sm font-semibold text-white hover:opacity-90"
                         >
                           ✓ Confirm
                         </button>
@@ -319,15 +319,15 @@ export default function AdminDashboard() {
 
         {/* Blocked dates */}
         <section className="mt-12">
-          <h2 className="font-heading text-2xl font-semibold text-plum">
+          <h2 className="font-heading text-2xl font-semibold text-navy">
             Blocked Dates
           </h2>
-          <p className="mt-1 text-sm text-plum/60">
+          <p className="mt-1 text-sm text-navy/60">
             Dates blocked manually (offline bookings, maintenance, etc.)
           </p>
 
           {blocked.length === 0 ? (
-            <div className="mt-6 rounded-2xl bg-white p-6 text-center text-sm text-plum/50 shadow-sm">
+            <div className="mt-6 rounded-2xl bg-white p-6 text-center text-sm text-navy/50 shadow-sm">
               No blocked dates yet.
             </div>
           ) : (

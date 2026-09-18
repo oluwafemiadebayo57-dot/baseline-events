@@ -8,9 +8,9 @@ export default function AboutPage() {
   return (
     <main className="bg-cream">
       {/* Header */}
-      <section className="bg-plum py-20 text-center text-cream">
+      <section className="bg-navy py-20 text-center text-cream">
         <h1 className="font-heading text-5xl font-bold md:text-6xl">
-          About <span className="text-accent">Baseline</span>
+          About <span className="text-gold">Baseline</span>
         </h1>
         <p className="mx-auto mt-4 max-w-2xl px-6 text-cream/70">
           A space built for moments that matter.
@@ -30,10 +30,10 @@ export default function AboutPage() {
         </div>
 
         <div>
-          <h2 className="font-heading text-4xl font-bold text-plum">
+          <h2 className="font-heading text-4xl font-bold text-navy">
             A Hall That Feels Like Home
           </h2>
-          <div className="mt-6 space-y-4 text-plum/80">
+          <div className="mt-6 space-y-4 text-navy/80">
             <p>
               Baseline Events Center is Akure&apos;s premier destination for
               weddings, birthdays, corporate events, and celebrations of every
@@ -55,7 +55,7 @@ export default function AboutPage() {
 
           <Link
             href="/booking"
-            className="mt-8 inline-block rounded-full bg-accent px-8 py-4 font-semibold text-white shadow-lg transition-transform hover:scale-105"
+            className="mt-8 inline-block rounded-full bg-gold px-8 py-4 font-semibold text-white shadow-lg transition-transform hover:scale-105"
           >
             Check Availability →
           </Link>
@@ -71,10 +71,10 @@ export default function AboutPage() {
             { number: "5★", label: "Client Rating" },
           ].map((stat) => (
             <div key={stat.label}>
-              <div className="font-heading text-5xl font-bold text-accent">
+              <div className="font-heading text-5xl font-bold text-gold">
                 {stat.number}
               </div>
-              <div className="mt-2 text-sm uppercase tracking-widest text-plum/60">
+              <div className="mt-2 text-sm uppercase tracking-widest text-navy/60">
                 {stat.label}
               </div>
             </div>

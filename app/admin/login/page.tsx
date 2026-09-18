@@ -44,10 +44,10 @@ export default function AdminLoginPage() {
         onSubmit={handleSubmit}
         className="w-full max-w-md rounded-2xl bg-white p-8 shadow-xl"
       >
-        <h1 className="font-heading text-3xl font-bold text-plum">
+        <h1 className="font-heading text-3xl font-bold text-navy">
           Admin Login
         </h1>
-        <p className="mt-2 text-sm text-plum/60">
+        <p className="mt-2 text-sm text-navy/60">
           Baseline Events Center — staff only
         </p>
 
@@ -58,7 +58,7 @@ export default function AdminLoginPage() {
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
+            className="w-full rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
           />
           <input
             type="password"
@@ -66,7 +66,7 @@ export default function AdminLoginPage() {
             required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
+            className="w-full rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
           />
         </div>
 
@@ -79,7 +79,7 @@ export default function AdminLoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="mt-6 w-full rounded-full bg-accent py-3 font-semibold text-white shadow-lg transition-transform hover:scale-[1.02] disabled:opacity-50"
+          className="mt-6 w-full rounded-full bg-gold py-3 font-semibold text-white shadow-lg transition-transform hover:scale-[1.02] disabled:opacity-50"
         >
           {loading ? "Signing in..." : "Sign In"}
         </button>

@@ -1,5 +1,5 @@
 // components/Footer.tsx
-// The bottom of every page. Dark plum background, contact info, quick links.
+// The bottom of every page. Dark navy background, contact info, quick links.
 
 import Link from "next/link";
 
@@ -13,12 +13,12 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-plum text-cream">
+    <footer className="bg-navy text-cream">
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-3">
         {/* Column 1: brand + tagline */}
         <div>
           <h3 className="font-heading text-2xl font-bold">
-            Baseline <span className="text-accent">Events</span>
+            Baseline <span className="text-gold">Events</span>
           </h3>
           <p className="mt-3 text-sm leading-relaxed text-cream/70">
             Premium event hall and lounge for weddings, birthdays, and
@@ -34,7 +34,7 @@ export default function Footer() {
               <li key={link.href}>
                 <Link
                   href={link.href}
-                  className="text-cream/70 transition-colors hover:text-accent"
+                  className="text-cream/70 transition-colors hover:text-gold"
                 >
                   {link.label}
                 </Link>

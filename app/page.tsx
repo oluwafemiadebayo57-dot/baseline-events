@@ -27,7 +27,7 @@ export default function HomePage() {
     <main>
       {/* ============ SECTION 1: HERO ============
           Big headline, tagline, and two buttons. */}
-      <section className="relative overflow-hidden bg-plum text-cream">
+      <section className="relative overflow-hidden bg-navy text-cream">
         {/* Background image with a dark overlay */}
         <div className="absolute inset-0">
           <Image
@@ -42,11 +42,11 @@ export default function HomePage() {
 
         {/* The actual text content — z-10 puts it above the background */}
         <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-6 py-32 text-center md:py-40">
-          <p className="mb-4 text-sm uppercase tracking-[0.3em] text-accent animate-fade-up">
+          <p className="mb-4 text-sm uppercase tracking-[0.3em] text-gold animate-fade-up">
             Akure&apos;s Premier Event Venue
           </p>
           <h1 className="font-heading text-5xl font-bold leading-tight md:text-7xl animate-fade-up">
-            Where Your <span className="text-purple">Memories</span> Begin
+            Where Your <span className="text-gold">Memories</span> Begin
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-cream/80 animate-fade-up">
             A 1,000-guest hall and elegant lounge for weddings, birthdays, and
@@ -56,13 +56,13 @@ export default function HomePage() {
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
             <Link
               href="/booking"
-              className="rounded-full bg-accent px-8 py-4 font-semibold text-white shadow-lg transition-transform hover:scale-105"
+              className="rounded-full bg-gold px-8 py-4 font-semibold text-white shadow-lg transition-transform hover:scale-105"
             >
               Check Available Dates
             </Link>
             <Link
               href="/about"
-              className="rounded-full border-2 border-cream/40 px-8 py-4 font-semibold text-cream transition-colors hover:bg-cream hover:text-plum"
+              className="rounded-full border-2 border-cream/40 px-8 py-4 font-semibold text-cream transition-colors hover:bg-cream hover:text-navy"
             >
               See the Hall
             </Link>
@@ -74,10 +74,10 @@ export default function HomePage() {
           Three cards: capacity, amenities, location. */}
       <section className="bg-cream py-24">
         <div className="mx-auto max-w-6xl px-6">
-          <h2 className="text-center font-heading text-4xl font-bold text-plum md:text-5xl">
+          <h2 className="text-center font-heading text-4xl font-bold text-navy md:text-5xl">
             Why Book With Us
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-plum/70">
+          <p className="mx-auto mt-4 max-w-2xl text-center text-navy/70">
             Everything you need for an unforgettable event — in one elegant
             space.
           </p>
@@ -105,10 +105,10 @@ export default function HomePage() {
                 className="rounded-2xl bg-white p-8 shadow-sm transition-shadow hover:shadow-xl"
               >
                 <div className="text-4xl">{feature.icon}</div>
-                <h3 className="mt-4 font-heading text-2xl font-semibold text-plum">
+                <h3 className="mt-4 font-heading text-2xl font-semibold text-navy">
                   {feature.title}
                 </h3>
-                <p className="mt-3 text-plum/70">{feature.text}</p>
+                <p className="mt-3 text-navy/70">{feature.text}</p>
               </div>
             ))}
           </div>
@@ -119,10 +119,10 @@ export default function HomePage() {
           Grid of 6 images with a hover zoom. */}
       <section className="bg-white py-24">
         <div className="mx-auto max-w-6xl px-6">
-          <h2 className="text-center font-heading text-4xl font-bold text-plum md:text-5xl">
+          <h2 className="text-center font-heading text-4xl font-bold text-navy md:text-5xl">
             A Glimpse Inside
           </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-plum/70">
+          <p className="mx-auto mt-4 max-w-2xl text-center text-navy/70">
             From intimate gatherings to grand celebrations — the space adapts to
             your vision.
           </p>
@@ -147,19 +147,19 @@ export default function HomePage() {
       </section>
 
       {/* ============ SECTION 4: CTA ============
-          Big purple banner pushing to /booking. */}
-      <section className="bg-purple py-24 text-center text-plum">
+          Big gold banner pushing to /booking. */}
+      <section className="bg-gold py-24 text-center text-navy">
         <div className="mx-auto max-w-3xl px-6">
           <h2 className="font-heading text-4xl font-bold md:text-5xl">
             Ready to Lock Your Date?
           </h2>
-          <p className="mt-4 text-lg text-plum/80">
+          <p className="mt-4 text-lg text-navy/80">
             Check availability in real time. Pick your date, pay a small
             deposit, done.
           </p>
           <Link
             href="/booking"
-            className="mt-10 inline-block rounded-full bg-accent px-10 py-4 text-lg font-semibold text-white shadow-xl transition-transform hover:scale-105"
+            className="mt-10 inline-block rounded-full bg-gold px-10 py-4 text-lg font-semibold text-white shadow-xl transition-transform hover:scale-105"
           >
             Book Your Event →
           </Link>

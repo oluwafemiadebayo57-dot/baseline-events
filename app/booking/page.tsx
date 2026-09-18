@@ -84,10 +84,10 @@ export default function BookingPage() {
     <main className="min-h-screen bg-cream py-20">
       <div className="mx-auto max-w-4xl px-6">
         <div className="text-center">
-          <h1 className="font-heading text-5xl font-bold text-plum">
+          <h1 className="font-heading text-5xl font-bold text-navy">
             Book Your Date
           </h1>
-          <p className="mt-3 text-plum/70">
+          <p className="mt-3 text-navy/70">
             Pick an available date, fill in your details, and lock it in.
           </p>
         </div>
@@ -97,22 +97,22 @@ export default function BookingPage() {
           <div className="mb-6 flex items-center justify-between">
             <button
               onClick={prevMonth}
-              className="rounded-full border border-plum/20 px-4 py-2 text-sm hover:bg-plum hover:text-cream"
+              className="rounded-full border border-navy/20 px-4 py-2 text-sm hover:bg-navy hover:text-cream"
             >
               ← Prev
             </button>
-            <h2 className="font-heading text-2xl font-semibold text-plum">
+            <h2 className="font-heading text-2xl font-semibold text-navy">
               {monthName} {year}
             </h2>
             <button
               onClick={nextMonth}
-              className="rounded-full border border-plum/20 px-4 py-2 text-sm hover:bg-plum hover:text-cream"
+              className="rounded-full border border-navy/20 px-4 py-2 text-sm hover:bg-navy hover:text-cream"
             >
               Next →
             </button>
           </div>
 
-          <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold uppercase tracking-wider text-plum/50">
+          <div className="grid grid-cols-7 gap-1 text-center text-xs font-semibold uppercase tracking-wider text-navy/50">
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((d) => (
               <div key={d} className="py-2">
                 {d}
@@ -140,10 +140,10 @@ export default function BookingPage() {
                   onClick={() => setSelectedDate(key)}
                   className={`
                     aspect-square rounded-lg text-sm font-medium transition-all
-                    ${isPast ? "text-plum/20 cursor-not-allowed" : ""}
+                    ${isPast ? "text-navy/20 cursor-not-allowed" : ""}
                     ${isBooked ? "bg-red-100 text-red-400 line-through cursor-not-allowed" : ""}
                     ${!isBooked && !isPast && !isSelected ? "bg-green-50 text-green-800 hover:bg-green-100" : ""}
-                    ${isSelected ? "bg-accent text-white shadow-md scale-105" : ""}
+                    ${isSelected ? "bg-gold text-white shadow-md scale-105" : ""}
                   `}
                 >
                   {day}
@@ -152,7 +152,7 @@ export default function BookingPage() {
             })}
           </div>
 
-          <div className="mt-6 flex flex-wrap gap-6 text-xs text-plum/60">
+          <div className="mt-6 flex flex-wrap gap-6 text-xs text-navy/60">
             <div className="flex items-center gap-2">
               <span className="h-3 w-3 rounded bg-green-50 border border-green-200" />
               Available
@@ -162,7 +162,7 @@ export default function BookingPage() {
               Booked
             </div>
             <div className="flex items-center gap-2">
-              <span className="h-3 w-3 rounded bg-accent" />
+              <span className="h-3 w-3 rounded bg-gold" />
               Your pick
             </div>
           </div>
@@ -174,10 +174,10 @@ export default function BookingPage() {
             onSubmit={handleSubmit}
             className="mt-10 rounded-2xl bg-white p-6 shadow-lg md:p-10"
           >
-            <h2 className="font-heading text-2xl font-semibold text-plum">
+            <h2 className="font-heading text-2xl font-semibold text-navy">
               Your Details
             </h2>
-            <p className="mt-2 text-sm text-plum/60">
+            <p className="mt-2 text-sm text-navy/60">
               {selectedDate
                 ? `Selected date: ${selectedDate}`
                 : "Pick a date above first."}
@@ -190,7 +190,7 @@ export default function BookingPage() {
                 required
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
+                className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
               />
               <input
                 type="email"
@@ -198,7 +198,7 @@ export default function BookingPage() {
                 required
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
+                className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
               />
               <input
                 type="tel"
@@ -206,13 +206,13 @@ export default function BookingPage() {
                 required
                 value={form.phone}
                 onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
+                className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
               />
               <select
                 required
                 value={form.event_type}
                 onChange={(e) => setForm({ ...form, event_type: e.target.value })}
-                className="rounded-lg border border-plum/20 px-4 py-3 focus:border-accent focus:outline-none"
+                className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
               >
                 <option value="">Type of event</option>
                 <option>Wedding</option>
@@ -232,7 +232,7 @@ export default function BookingPage() {
             <button
               type="submit"
               disabled={!selectedDate || loading}
-              className="mt-8 w-full rounded-full bg-accent py-4 font-semibold text-white shadow-lg transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-40"
+              className="mt-8 w-full rounded-full bg-gold py-4 font-semibold text-white shadow-lg transition-transform hover:scale-[1.02] disabled:cursor-not-allowed disabled:opacity-40"
             >
               {loading
                 ? "Saving..."
@@ -247,45 +247,45 @@ export default function BookingPage() {
               <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-3xl">
                 ✓
               </div>
-              <h2 className="mt-4 font-heading text-3xl font-bold text-plum">
+              <h2 className="mt-4 font-heading text-3xl font-bold text-navy">
                 Almost Done
               </h2>
-              <p className="mt-2 text-plum/70">
+              <p className="mt-2 text-navy/70">
                 Transfer the deposit to the account below. We&apos;ll confirm
                 your booking once payment is received.
               </p>
             </div>
 
             <div className="mt-8 space-y-4 rounded-xl bg-cream p-6">
-              <div className="flex justify-between border-b border-plum/10 pb-3">
-                <span className="text-plum/60">Date selected</span>
-                <span className="font-semibold text-plum">{selectedDate}</span>
+              <div className="flex justify-between border-b border-navy/10 pb-3">
+                <span className="text-navy/60">Date selected</span>
+                <span className="font-semibold text-navy">{selectedDate}</span>
               </div>
-              <div className="flex justify-between border-b border-plum/10 pb-3">
-                <span className="text-plum/60">Bank</span>
-                <span className="font-semibold text-plum">{BANK_DETAILS.bank}</span>
+              <div className="flex justify-between border-b border-navy/10 pb-3">
+                <span className="text-navy/60">Bank</span>
+                <span className="font-semibold text-navy">{BANK_DETAILS.bank}</span>
               </div>
-              <div className="flex justify-between border-b border-plum/10 pb-3">
-                <span className="text-plum/60">Account name</span>
-                <span className="font-semibold text-plum">
+              <div className="flex justify-between border-b border-navy/10 pb-3">
+                <span className="text-navy/60">Account name</span>
+                <span className="font-semibold text-navy">
                   {BANK_DETAILS.accountName}
                 </span>
               </div>
-              <div className="flex justify-between border-b border-plum/10 pb-3">
-                <span className="text-plum/60">Account number</span>
-                <span className="font-mono text-lg font-bold text-accent">
+              <div className="flex justify-between border-b border-navy/10 pb-3">
+                <span className="text-navy/60">Account number</span>
+                <span className="font-mono text-lg font-bold text-gold">
                   {BANK_DETAILS.accountNumber}
                 </span>
               </div>
               <div className="flex justify-between pt-1">
-                <span className="text-plum/60">Deposit required</span>
-                <span className="font-semibold text-plum">
+                <span className="text-navy/60">Deposit required</span>
+                <span className="font-semibold text-navy">
                   {BANK_DETAILS.depositAmount}
                 </span>
               </div>
             </div>
 
-            <p className="mt-6 text-center text-sm text-plum/60">
+            <p className="mt-6 text-center text-sm text-navy/60">
               After payment, you&apos;ll receive a confirmation by email within a
               few hours.
             </p>
@@ -296,7 +296,7 @@ export default function BookingPage() {
                 setSelectedDate(null);
                 setForm({ name: "", email: "", phone: "", event_type: "" });
               }}
-              className="mt-6 w-full rounded-full border border-plum/20 py-3 text-sm text-plum/70 hover:bg-plum hover:text-cream"
+              className="mt-6 w-full rounded-full border border-navy/20 py-3 text-sm text-navy/70 hover:bg-navy hover:text-cream"
             >
               ← Start over
             </button>
