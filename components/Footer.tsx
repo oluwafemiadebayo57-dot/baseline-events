@@ -1,34 +1,44 @@
 // components/Footer.tsx
-// The bottom of every page. Dark navy background, contact info, quick links.
+// Site footer — reads contact info from settings dynamically.
 
 import Link from "next/link";
+import { getSettings } from "@/lib/actions";
 
-export default function Footer() {
-  // Quick links — same idea as the navbar, listed once here.
-const links = [
-  { href: "/",        label: "Home" },
-  { href: "/halls",   label: "Halls" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/about",   label: "About" },
-  { href: "/booking", label: "Book Now" },
-  { href: "/contact", label: "Contact" },
-];
+export default async function Footer() {
+  const settings = await getSettings();
+
+  const phone = settings?.phone ?? "0812 667 1066";
+  const email = settings?.email ?? "info@baselineeventcentre.com";
+  const address = settings?.address ?? "Akure, Ondo State, Nigeria";
+
+  // Convert Nigerian 0-prefix to +234 for WhatsApp
+  const digits = phone.replace(/[^0-9]/g, "");
+  const whatsapp = digits.startsWith("0") ? "234" + digits.slice(1) : digits;
+
+  const links = [
+    { href: "/",        label: "Home" },
+    { href: "/halls",   label: "Halls" },
+    { href: "/gallery", label: "Gallery" },
+    { href: "/about",   label: "About" },
+    { href: "/booking", label: "Book Now" },
+    { href: "/contact", label: "Contact" },
+  ];
 
   return (
     <footer className="bg-navy text-cream">
       <div className="mx-auto grid max-w-6xl gap-10 px-6 py-14 md:grid-cols-3">
-        {/* Column 1: brand + tagline */}
+        {/* Brand */}
         <div>
           <h3 className="font-heading text-2xl font-bold">
-            Baseline <span className="text-gold">Events</span>
+            Baseline <span className="text-gold">Event Centre</span>
           </h3>
           <p className="mt-3 text-sm leading-relaxed text-cream/70">
-            Premium event hall and lounge for weddings, birthdays, and
-            corporate events. Book online, in minutes.
+            Two premium halls for weddings, conferences, banquets, and
+            celebrations. Book online, in minutes.
           </p>
         </div>
 
-        {/* Column 2: quick links */}
+        {/* Quick links */}
         <div>
           <h4 className="font-heading text-lg font-semibold">Quick Links</h4>
           <ul className="mt-4 space-y-2 text-sm">
@@ -45,20 +55,47 @@ const links = [
           </ul>
         </div>
 
-        {/* Column 3: contact info — placeholder values for now */}
+        {/* Contact — dynamic from settings */}
         <div>
           <h4 className="font-heading text-lg font-semibold">Contact</h4>
           <ul className="mt-4 space-y-2 text-sm text-cream/70">
-            <li>📍 123 Example Road, Your City</li>
-            <li>📞 +234 800 000 0000</li>
-            <li>✉️ hello@baselineevents.com</li>
+            <li>📍 {address}</li>
+            <li>
+              📞{" "}
+              <a
+                href={`tel:+${whatsapp}`}
+                className="hover:text-gold"
+              >
+                {phone}
+              </a>
+            </li>
+            <li>
+              ✉️{" "}
+              <a
+                href={`mailto:${email}`}
+                className="hover:text-gold break-words"
+              >
+                {email}
+              </a>
+            </li>
+            <li>
+              💬{" "}
+              <a
+                href={`https://wa.me/${whatsapp}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-gold"
+              >
+                WhatsApp
+              </a>
+            </li>
           </ul>
         </div>
       </div>
 
-      {/* Bottom bar — copyright */}
+      {/* Bottom bar */}
       <div className="border-t border-cream/10 py-5 text-center text-xs text-cream/50">
-        © {new Date().getFullYear()} Baseline Events Center. All rights reserved.
+        © {new Date().getFullYear()} Baseline Event Centre. All rights reserved.
       </div>
     </footer>
   );

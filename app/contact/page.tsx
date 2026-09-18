@@ -6,12 +6,14 @@ import { getSettings } from "@/lib/actions";
 export default async function ContactPage() {
   const settings = await getSettings();
 
-  const phone = settings?.phone ?? "+234 800 000 0000";
+  const phone = settings?.phone ?? "0812 667 1066";
   const email = settings?.email ?? "info@baselineeventcentre.com";
   const address = settings?.address ?? "Akure, Ondo State, Nigeria";
 
-  // Build WhatsApp link from phone — strip spaces, +, dashes
-  const whatsapp = phone.replace(/[^0-9]/g, "");
+  // Build WhatsApp link from phone.
+  // Strip everything except digits, then convert Nigerian 0-prefix to +234.
+  const digits = phone.replace(/[^0-9]/g, "");
+  const whatsapp = digits.startsWith("0") ? "234" + digits.slice(1) : digits;
 
   return (
     <main className="bg-cream">
@@ -49,7 +51,7 @@ export default async function ContactPage() {
               Call Us
             </h3>
             <a
-              href={`tel:${whatsapp}`}
+              href={`tel:+${whatsapp}`}
               className="mt-3 block text-sm text-navy/70 hover:text-gold"
             >
               {phone}
@@ -87,19 +89,20 @@ export default async function ContactPage() {
           </a>
         </div>
 
-{/* Map */}
-<div className="mt-12 overflow-hidden rounded-2xl shadow-lg">
-  <iframe
-    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3958.1302602895785!2d5.1699800749993665!3d7.225979992780033!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1047851c02b36ccf%3A0xc27e737dc6cd13d6!2sBaseline%20Event%20Center!5e0!3m2!1sen!2sng!4v1789752214682!5m2!1sen!2sng"
-    width="100%"
-    height="450"
-    style={{ border: 0 }}
-    allowFullScreen
-    loading="lazy"
-    referrerPolicy="strict-origin-when-cross-origin"
-    title="Baseline Event Centre location"
-  />
-</div>
+        {/* Map */}
+        <div className="mt-12 overflow-hidden rounded-2xl shadow-lg">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3958.1302602895785!2d5.1699800749993665!3d7.225979992780033!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1047851c02b36ccf%3A0xc27e737dc6cd13d6!2sBaseline%20Event%20Center!5e0!3m2!1sen!2sng!4v1789752214682!5m2!1sen!2sng"
+            width="100%"
+            height="450"
+            style={{ border: 0 }}
+            allowFullScreen
+            loading="lazy"
+            referrerPolicy="strict-origin-when-cross-origin"
+            title="Baseline Event Centre location"
+          />
+        </div>
+
         {/* Visit CTA */}
         <div className="mt-12 text-center">
           <h2 className="font-heading text-3xl font-bold text-navy">

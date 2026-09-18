@@ -2,6 +2,7 @@
 // The ROOT layout — wraps every page. Fonts and metadata live here.
 
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { Playfair_Display, Inter } from "next/font/google";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -23,9 +24,9 @@ const inter = Inter({
 
 // Shows in the browser tab + Google search results.
 export const metadata: Metadata = {
-  title: "Baseline Events Center | Book Your Perfect Event",
+  title: "Baseline Event Centre | Akure's Premier Event Venue",
   description:
-    "Premium event hall and lounge for weddings, birthdays, and corporate events. Check availability and book online in minutes.",
+    "Two premium halls for weddings, conferences, banquets, and celebrations in Akure. Check availability and book online in minutes.",
 };
 
 export default function RootLayout({
@@ -38,7 +39,9 @@ export default function RootLayout({
       <body className="antialiased">
         <Navbar />
         {children}
-        <Footer />
+        <Suspense fallback={<div className="bg-navy h-40" />}>
+          <Footer />
+        </Suspense>
       </body>
     </html>
   );
