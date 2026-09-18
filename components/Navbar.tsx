@@ -15,11 +15,11 @@ export default function Navbar() {
 const links = [
   { href: "/",        label: "Home" },
   { href: "/halls",   label: "Halls" },
+  { href: "/gallery", label: "Gallery" },
   { href: "/about",   label: "About" },
   { href: "/booking", label: "Book Now" },
   { href: "/contact", label: "Contact" },
 ];
-
   return (
     <header className="sticky top-0 z-50 bg-navy text-cream shadow-md">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">

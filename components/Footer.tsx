@@ -8,6 +8,7 @@ export default function Footer() {
 const links = [
   { href: "/",        label: "Home" },
   { href: "/halls",   label: "Halls" },
+  { href: "/gallery", label: "Gallery" },
   { href: "/about",   label: "About" },
   { href: "/booking", label: "Book Now" },
   { href: "/contact", label: "Contact" },
