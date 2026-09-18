@@ -12,6 +12,7 @@ import {
   createBooking,
   getBookedDatesForHall,
   getHalls,
+  getSettings,
 } from "@/lib/actions";
 
 type Hall = {
@@ -24,13 +25,6 @@ type Hall = {
   rental_price: number;
   caution_fee: number;
   facilities: string[];
-};
-
-// Placeholder bank details — will be editable from admin later
-const BANK_DETAILS = {
-  bank: "GTBank",
-  accountName: "Baseline Event Centre Ltd",
-  accountNumber: "0123456789",
 };
 
 // Format numbers with commas: 3500000 → 3,500,000
@@ -46,6 +40,13 @@ export default function BookingPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Bank details — loaded from the settings table
+  const [bankDetails, setBankDetails] = useState({
+    bank: "",
+    accountName: "",
+    accountNumber: "",
+  });
+
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -53,9 +54,19 @@ export default function BookingPage() {
     event_type: "",
   });
 
-  // Load all halls on mount
+  // Load halls and bank details on mount
   useEffect(() => {
     getHalls().then((h) => setHalls(h as Hall[])).catch(console.error);
+
+    getSettings().then((s) => {
+      if (s) {
+        setBankDetails({
+          bank: s.bank_name ?? "",
+          accountName: s.account_name ?? "",
+          accountNumber: s.account_number ?? "",
+        });
+      }
+    });
   }, []);
 
   // When a hall is selected, load ITS booked dates
@@ -144,18 +155,18 @@ export default function BookingPage() {
               </div>
               <div className="flex justify-between border-b border-navy/10 pb-3">
                 <span className="text-navy/60">Bank</span>
-                <span className="font-semibold text-navy">{BANK_DETAILS.bank}</span>
+                <span className="font-semibold text-navy">{bankDetails.bank}</span>
               </div>
               <div className="flex justify-between border-b border-navy/10 pb-3">
                 <span className="text-navy/60">Account name</span>
                 <span className="font-semibold text-navy">
-                  {BANK_DETAILS.accountName}
+                  {bankDetails.accountName}
                 </span>
               </div>
               <div className="flex justify-between pt-1">
                 <span className="text-navy/60">Account number</span>
                 <span className="font-mono text-lg font-bold text-gold">
-                  {BANK_DETAILS.accountNumber}
+                  {bankDetails.accountNumber}
                 </span>
               </div>
             </div>
@@ -240,7 +251,7 @@ export default function BookingPage() {
           </div>
         </div>
 
-        {/* STEP 2 — Calendar (only shows when a hall is selected) */}
+        {/* STEP 2 — Calendar */}
         {selectedHall && (
           <div className="mt-12 rounded-2xl bg-white p-6 shadow-lg md:p-10">
             <h2 className="font-heading text-xl font-semibold text-navy">

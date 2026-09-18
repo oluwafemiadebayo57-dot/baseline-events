@@ -15,7 +15,6 @@ import {
   createAdminBooking,
 } from "@/lib/actions";
 
-// TypeScript type for a booking row (matches the database schema)
 type Booking = {
   id: string;
   created_at: string;
@@ -24,6 +23,7 @@ type Booking = {
   email: string;
   phone: string;
   event_type: string;
+  hall_slug: string | null;
   status: "pending" | "confirmed" | "cancelled";
 };
 
@@ -36,16 +36,16 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
   const [addForm, setAddForm] = useState({
-  event_date: "",
-  name: "",
-  email: "",
-  phone: "",
-  event_type: "",
-  notes: "",
+    event_date: "",
+    name: "",
+    email: "",
+    phone: "",
+    event_type: "",
+    hall_slug: "big-hall",
+    notes: "",
   });
   const [saving, setSaving] = useState(false);
 
-  // On mount: check login, then load data
   useEffect(() => {
     (async () => {
       const { data: { user } } = await supabase.auth.getUser();
@@ -83,25 +83,27 @@ export default function AdminDashboard() {
   }
 
   async function handleAddBooking(e: React.FormEvent) {
-  e.preventDefault();
-  setSaving(true);
-  const result = await createAdminBooking(addForm);
-  setSaving(false);
-  if (!result.success) {
-    alert("Error: " + result.error);
-    return;
+    e.preventDefault();
+    setSaving(true);
+    const result = await createAdminBooking(addForm);
+    setSaving(false);
+    if (!result.success) {
+      alert("Error: " + result.error);
+      return;
+    }
+    setShowAddForm(false);
+    setAddForm({
+      event_date: "",
+      name: "",
+      email: "",
+      phone: "",
+      event_type: "",
+      hall_slug: "big-hall",
+      notes: "",
+    });
+    await refresh();
   }
-  setShowAddForm(false);
-  setAddForm({
-    event_date: "",
-    name: "",
-    email: "",
-    phone: "",
-    event_type: "",
-    notes: "",
-  });
-  await refresh();
-}
+
   async function handleSignOut() {
     await supabase.auth.signOut();
     router.push("/admin/login");
@@ -125,15 +127,23 @@ export default function AdminDashboard() {
               Dashboard
             </h1>
             <p className="mt-1 text-sm text-navy/60">
-              Manage bookings for Baseline Events Center
+              Manage bookings for Baseline Event Centre
             </p>
           </div>
-          <button
-            onClick={handleSignOut}
-            className="rounded-full border border-navy/20 px-5 py-2 text-sm hover:bg-navy hover:text-cream"
-          >
-            Sign Out
-          </button>
+          <div className="flex gap-2">
+            <button
+              onClick={() => router.push("/admin/settings")}
+              className="rounded-full border border-navy/20 px-5 py-2 text-sm hover:bg-navy hover:text-cream"
+            >
+              Settings
+            </button>
+            <button
+              onClick={handleSignOut}
+              className="rounded-full border border-navy/20 px-5 py-2 text-sm hover:bg-navy hover:text-cream"
+            >
+              Sign Out
+            </button>
+          </div>
         </div>
 
         {/* Stat cards */}
@@ -156,104 +166,120 @@ export default function AdminDashboard() {
           </div>
         </div>
 
-{/* Bookings list */}
-<section className="mt-12">
-  <div className="flex flex-wrap items-center justify-between gap-4">
-    <div>
-      <h2 className="font-heading text-2xl font-semibold text-navy">
-        Bookings
-      </h2>
-      <p className="mt-1 text-sm text-navy/60">
-        Confirm bookings after payment is received.
-      </p>
-    </div>
-    <button
-      onClick={() => setShowAddForm(!showAddForm)}
-      className="rounded-full bg-navy px-5 py-2 text-sm font-semibold text-cream hover:opacity-90"
-    >
-      {showAddForm ? "✕ Cancel" : "+ Add Booking"}
-    </button>
-  </div>
+        {/* Bookings list */}
+        <section className="mt-12">
+          <div className="flex flex-wrap items-center justify-between gap-4">
+            <div>
+              <h2 className="font-heading text-2xl font-semibold text-navy">
+                Bookings
+              </h2>
+              <p className="mt-1 text-sm text-navy/60">
+                Confirm bookings after payment is received.
+              </p>
+            </div>
+            <button
+              onClick={() => setShowAddForm(!showAddForm)}
+              className="rounded-full bg-navy px-5 py-2 text-sm font-semibold text-cream hover:opacity-90"
+            >
+              {showAddForm ? "✕ Cancel" : "+ Add Booking"}
+            </button>
+          </div>
 
-  {/* Add booking form (appears when toggled) */}
-  {showAddForm && (
-    <form
-      onSubmit={handleAddBooking}
-      className="mt-6 rounded-2xl bg-white p-6 shadow-md"
-    >
-      <h3 className="font-heading text-lg font-semibold text-navy">
-        New Booking (offline client)
-      </h3>
-      <p className="mt-1 text-xs text-navy/60">
-        For walk-in or phone bookings. Saves as confirmed.
-      </p>
+          {/* Add booking form */}
+          {showAddForm && (
+            <form
+              onSubmit={handleAddBooking}
+              className="mt-6 rounded-2xl bg-white p-6 shadow-md"
+            >
+              <h3 className="font-heading text-lg font-semibold text-navy">
+                New Booking (offline client)
+              </h3>
+              <p className="mt-1 text-xs text-navy/60">
+                For walk-in or phone bookings. Saves as confirmed.
+              </p>
 
-      <div className="mt-4 grid gap-3 md:grid-cols-2">
-        <input
-          type="date"
-          required
-          value={addForm.event_date}
-          onChange={(e) =>
-            setAddForm({ ...addForm, event_date: e.target.value })
-          }
-          className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
-        />
-        <input
-          type="text"
-          placeholder="Client name"
-          required
-          value={addForm.name}
-          onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
-          className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
-        />
-        <input
-          type="email"
-          placeholder="Email (optional)"
-          value={addForm.email}
-          onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
-          className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
-        />
-        <input
-          type="tel"
-          placeholder="Phone number"
-          required
-          value={addForm.phone}
-          onChange={(e) => setAddForm({ ...addForm, phone: e.target.value })}
-          className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
-        />
-        <select
-          required
-          value={addForm.event_type}
-          onChange={(e) =>
-            setAddForm({ ...addForm, event_type: e.target.value })
-          }
-          className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
-        >
-          <option value="">Type of event</option>
-          <option>Wedding</option>
-          <option>Birthday</option>
-          <option>Corporate Event</option>
-          <option>Conference</option>
-          <option>Other</option>
-        </select>
-        <input
-          type="text"
-          placeholder="Notes (optional)"
-          value={addForm.notes}
-          onChange={(e) => setAddForm({ ...addForm, notes: e.target.value })}
-          className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
-        />
-      </div>
+              <div className="mt-4 grid gap-3 md:grid-cols-2">
+                <input
+                  type="date"
+                  required
+                  value={addForm.event_date}
+                  onChange={(e) =>
+                    setAddForm({ ...addForm, event_date: e.target.value })
+                  }
+                  className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
+                />
+                <input
+                  type="text"
+                  placeholder="Client name"
+                  required
+                  value={addForm.name}
+                  onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
+                  className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
+                />
+                <input
+                  type="email"
+                  placeholder="Email (optional)"
+                  value={addForm.email}
+                  onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
+                  className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
+                />
+                <input
+                  type="tel"
+                  placeholder="Phone number"
+                  required
+                  value={addForm.phone}
+                  onChange={(e) => setAddForm({ ...addForm, phone: e.target.value })}
+                  className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
+                />
+                <select
+                  required
+                  value={addForm.hall_slug}
+                  onChange={(e) =>
+                    setAddForm({ ...addForm, hall_slug: e.target.value })
+                  }
+                  className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
+                >
+                  <option value="big-hall">The Big Hall</option>
+                  <option value="small-hall">The Small Hall</option>
+                </select>
+                <select
+                  required
+                  value={addForm.event_type}
+                  onChange={(e) =>
+                    setAddForm({ ...addForm, event_type: e.target.value })
+                  }
+                  className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
+                >
+                  <option value="">Type of event</option>
+                  <option>Wedding</option>
+                  <option>Birthday</option>
+                  <option>Conference</option>
+                  <option>Corporate Event</option>
+                  <option>Banquet</option>
+                  <option>Other</option>
+                </select>
+                <div className="md:col-span-2">
+                  <input
+                    type="text"
+                    placeholder="Notes (optional)"
+                    value={addForm.notes}
+                    onChange={(e) =>
+                      setAddForm({ ...addForm, notes: e.target.value })
+                    }
+                    className="w-full rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
+                  />
+                </div>
+              </div>
 
-      <button
-        type="submit"
-        disabled={saving}
-        className="mt-5 rounded-full bg-gold px-8 py-3 font-semibold text-white shadow-lg hover:opacity-90 disabled:opacity-50"
-      >
-        {saving ? "Saving..." : "Save Booking"}
-      </button>
-    </form>
-  )}
+              <button
+                type="submit"
+                disabled={saving}
+                className="mt-5 rounded-full bg-gold px-8 py-3 font-semibold text-navy shadow-lg hover:opacity-90 disabled:opacity-50"
+              >
+                {saving ? "Saving..." : "Save Booking"}
+              </button>
+            </form>
+          )}
 
           {bookings.length === 0 ? (
             <div className="mt-6 rounded-2xl bg-white p-10 text-center text-navy/50 shadow-sm">
@@ -283,11 +309,16 @@ export default function AdminDashboard() {
                         >
                           {b.status}
                         </span>
+                        {b.hall_slug && (
+                          <span className="rounded-full bg-navy/10 px-3 py-1 text-xs font-semibold text-navy">
+                            {b.hall_slug === "big-hall" ? "The Big Hall" : "The Small Hall"}
+                          </span>
+                        )}
                       </div>
                       <div className="mt-2 grid gap-1 text-sm text-navy/70 sm:grid-cols-2">
                         <div>📅 Event: <strong>{b.event_date}</strong></div>
                         <div>🎉 Type: {b.event_type}</div>
-                        <div>✉️ {b.email}</div>
+                        <div>✉️ {b.email || "—"}</div>
                         <div>📞 {b.phone}</div>
                       </div>
                     </div>
@@ -296,7 +327,7 @@ export default function AdminDashboard() {
                       {b.status === "pending" && (
                         <button
                           onClick={() => handleConfirm(b.id)}
-                          className="rounded-full bg-gold px-5 py-2 text-sm font-semibold text-white hover:opacity-90"
+                          className="rounded-full bg-gold px-5 py-2 text-sm font-semibold text-navy hover:opacity-90"
                         >
                           ✓ Confirm
                         </button>

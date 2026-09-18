@@ -221,3 +221,23 @@ export async function getBookedDatesForHall(hallSlug: string): Promise<string[]>
   ];
   return Array.from(new Set(dates));
 }
+// Update the settings row.
+// Only the fields we pass get updated.
+export async function updateSettings(data: {
+  bank_name?: string;
+  account_name?: string;
+  account_number?: string;
+  deposit_amount?: string;
+  phone?: string;
+  email?: string;
+  address?: string;
+  tagline?: string;
+}) {
+  const supabase = getAdminClient();
+  const { error } = await supabase
+    .from("settings")
+    .update(data)
+    .eq("id", 1);
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
