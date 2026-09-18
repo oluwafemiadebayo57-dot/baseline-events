@@ -20,24 +20,24 @@ type Hall = {
 
 const fmt = (n: number) => n.toLocaleString("en-NG");
 
-// Placeholder hero + gallery images — swap when real photos are ready.
+// Real Cloudinary images
 const HERO_IMAGE =
-  "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&q=80";
+  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753151/OPT_6114.jpg";
 
 const GALLERY_PREVIEW = [
-  "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&q=80",
-  "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80",
-  "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80",
-  "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80",
-  "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80",
-  "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80",
+  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753147/OPT_6598.jpg",
+  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753151/OPT_6114.jpg",
+  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753148/OPT_6453.jpg",
+  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753147/OPT_6598.jpg",
+  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753151/OPT_6114.jpg",
+  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753148/OPT_6453.jpg",
 ];
 
 const FALLBACK_IMAGES: Record<string, string> = {
   "big-hall":
-    "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1200&q=80",
+    "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753147/OPT_6598.jpg",
   "small-hall":
-    "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1200&q=80",
+    "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753148/OPT_6453.jpg",
 };
 
 export default async function HomePage() {
@@ -54,10 +54,10 @@ export default async function HomePage() {
             fill
             priority
             sizes="100vw"
-            className="object-cover opacity-30"
+            className="object-cover opacity-50"
           />
           {/* Gradient overlay for readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/70 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/60 to-navy/30" />
         </div>
 
         <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-6 py-32 text-center md:py-44">

@@ -1,25 +1,33 @@
 // app/contact/page.tsx
-// Contact page — address, phone, email, and WhatsApp button.
+// Contact page — reads real info from the settings table.
 
-export default function ContactPage() {
-  // Contact info — replace these with the client's real details when he sends them.
-  const contact = {
-    address: "123 Example Road, Akure, Ondo State",
-    phone: "+234 800 000 0000",
-    email: "hello@baselineevents.com",
-    whatsapp: "2348000000000", // no + sign, no spaces
-  };
+import { getSettings } from "@/lib/actions";
+
+export default async function ContactPage() {
+  const settings = await getSettings();
+
+  const phone = settings?.phone ?? "+234 800 000 0000";
+  const email = settings?.email ?? "info@baselineeventcentre.com";
+  const address = settings?.address ?? "Akure, Ondo State, Nigeria";
+
+  // Build WhatsApp link from phone — strip spaces, +, dashes
+  const whatsapp = phone.replace(/[^0-9]/g, "");
 
   return (
     <main className="bg-cream">
       {/* Header */}
       <section className="bg-navy py-20 text-center text-cream">
-        <h1 className="font-heading text-5xl font-bold md:text-6xl">
-          Get in <span className="text-gold">Touch</span>
-        </h1>
-        <p className="mx-auto mt-4 max-w-2xl px-6 text-cream/70">
-          Questions about booking? Reach us — we respond fast.
-        </p>
+        <div className="mx-auto max-w-3xl px-6">
+          <p className="mb-4 text-sm uppercase tracking-[0.3em] text-gold">
+            Get in Touch
+          </p>
+          <h1 className="font-heading text-5xl font-bold md:text-6xl">
+            Contact <span className="text-gold">Us</span>
+          </h1>
+          <p className="mt-6 text-lg text-cream/70">
+            Questions about booking? We respond fast.
+          </p>
+        </div>
       </section>
 
       {/* Contact cards */}
@@ -31,7 +39,7 @@ export default function ContactPage() {
             <h3 className="mt-4 font-heading text-xl font-semibold text-navy">
               Visit Us
             </h3>
-            <p className="mt-3 text-sm text-navy/70">{contact.address}</p>
+            <p className="mt-3 text-sm text-navy/70">{address}</p>
           </div>
 
           {/* Phone */}
@@ -41,10 +49,10 @@ export default function ContactPage() {
               Call Us
             </h3>
             <a
-              href={`tel:${contact.phone.replace(/\s/g, "")}`}
+              href={`tel:${whatsapp}`}
               className="mt-3 block text-sm text-navy/70 hover:text-gold"
             >
-              {contact.phone}
+              {phone}
             </a>
           </div>
 
@@ -55,24 +63,22 @@ export default function ContactPage() {
               Email Us
             </h3>
             <a
-              href={`mailto:${contact.email}`}
-              className="mt-3 block text-sm text-navy/70 hover:text-gold"
+              href={`mailto:${email}`}
+              className="mt-3 block text-sm text-navy/70 hover:text-gold break-words"
             >
-              {contact.email}
+              {email}
             </a>
           </div>
         </div>
 
-        {/* WhatsApp CTA — the big one for Nigerian clients */}
-        <div className="mt-12 rounded-2xl bg-gold p-10 text-center text-navy">
-          <h2 className="font-heading text-3xl font-bold">
-            Prefer to Chat?
-          </h2>
-          <p className="mt-3 text-navy/70">
+        {/* WhatsApp CTA */}
+        <div className="mt-12 rounded-2xl bg-navy p-10 text-center text-cream">
+          <h2 className="font-heading text-3xl font-bold">Prefer to Chat?</h2>
+          <p className="mt-3 text-cream/70">
             Message us on WhatsApp — we usually reply within minutes.
           </p>
           <a
-            href={`https://wa.me/${contact.whatsapp}`}
+            href={`https://wa.me/${whatsapp}`}
             target="_blank"
             rel="noopener noreferrer"
             className="mt-6 inline-block rounded-full bg-[#25D366] px-8 py-4 font-semibold text-white shadow-lg transition-transform hover:scale-105"
@@ -81,15 +87,33 @@ export default function ContactPage() {
           </a>
         </div>
 
-        {/* Simple map placeholder */}
-        <div className="mt-12 overflow-hidden rounded-2xl shadow-lg">
-          <iframe
-            src="https://www.google.com/maps?q=Akure,Nigeria&output=embed"
-            width="100%"
-            height="400"
-            style={{ border: 0 }}
-            loading="lazy"
-          />
+{/* Map */}
+<div className="mt-12 overflow-hidden rounded-2xl shadow-lg">
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3958.1302602895785!2d5.1699800749993665!3d7.225979992780033!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x1047851c02b36ccf%3A0xc27e737dc6cd13d6!2sBaseline%20Event%20Center!5e0!3m2!1sen!2sng!4v1789752214682!5m2!1sen!2sng"
+    width="100%"
+    height="450"
+    style={{ border: 0 }}
+    allowFullScreen
+    loading="lazy"
+    referrerPolicy="strict-origin-when-cross-origin"
+    title="Baseline Event Centre location"
+  />
+</div>
+        {/* Visit CTA */}
+        <div className="mt-12 text-center">
+          <h2 className="font-heading text-3xl font-bold text-navy">
+            Want to see it in person?
+          </h2>
+          <p className="mt-3 text-navy/70">
+            Book a viewing, or check availability online right now.
+          </p>
+          <a
+            href="/booking"
+            className="mt-6 inline-block rounded-full bg-gold px-8 py-4 font-semibold text-navy shadow-lg transition-transform hover:scale-105"
+          >
+            Check Available Dates →
+          </a>
         </div>
       </section>
     </main>
