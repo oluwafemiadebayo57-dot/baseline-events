@@ -1,103 +1,120 @@
 // app/page.tsx
-// The homepage. This is the first thing every visitor sees.
-// It's built from 5 sections stacked top to bottom.
+// Homepage — updated for Baseline Event Centre.
+// Real brand: navy + gold, two halls, real services from the flyer.
 
 import Link from "next/link";
 import Image from "next/image";
+import { getHalls } from "@/lib/actions";
 
-// Placeholder images — swap these URLs for the client's real photos later.
-// All hosted on Unsplash (free, no copyright issues for the demo).
-const heroImages = [
-  "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&q=80",
-  "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1600&q=80",
-  "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1600&q=80",
-];
+type Hall = {
+  id: string;
+  slug: string;
+  name: string;
+  tagline: string | null;
+  capacity_conf: number;
+  capacity_banq: number;
+  rental_price: number;
+  caution_fee: number;
+  image_url: string | null;
+};
 
-const galleryImages = [
+const fmt = (n: number) => n.toLocaleString("en-NG");
+
+// Placeholder hero + gallery images — swap when real photos are ready.
+const HERO_IMAGE =
+  "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1600&q=80";
+
+const GALLERY_PREVIEW = [
   "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=800&q=80",
-  "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80",
   "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=800&q=80",
   "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&q=80",
   "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=800&q=80",
   "https://images.unsplash.com/photo-1519741497674-611481863552?w=800&q=80",
+  "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=800&q=80",
 ];
 
-export default function HomePage() {
+const FALLBACK_IMAGES: Record<string, string> = {
+  "big-hall":
+    "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1200&q=80",
+  "small-hall":
+    "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1200&q=80",
+};
+
+export default async function HomePage() {
+  const halls = (await getHalls()) as Hall[];
+
   return (
     <main>
-      {/* ============ SECTION 1: HERO ============
-          Big headline, tagline, and two buttons. */}
+      {/* ============ HERO ============ */}
       <section className="relative overflow-hidden bg-navy text-cream">
-        {/* Background image with a dark overlay */}
         <div className="absolute inset-0">
           <Image
-            src={heroImages[0]}
-            alt="Event hall"
+            src={HERO_IMAGE}
+            alt="Baseline Event Centre"
             fill
             priority
             sizes="100vw"
-            className="object-cover opacity-40"
+            className="object-cover opacity-30"
           />
+          {/* Gradient overlay for readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/70 to-transparent" />
         </div>
 
-        {/* The actual text content — z-10 puts it above the background */}
-        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-6 py-32 text-center md:py-40">
+        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center px-6 py-32 text-center md:py-44">
           <p className="mb-4 text-sm uppercase tracking-[0.3em] text-gold animate-fade-up">
-            Akure&apos;s Premier Event Venue
+            Akure&apos;s Premier Event Centre
           </p>
           <h1 className="font-heading text-5xl font-bold leading-tight md:text-7xl animate-fade-up">
-            Where Your <span className="text-gold">Memories</span> Begin
+            Your Event, <span className="text-gold">Our Priority</span>
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-cream/80 animate-fade-up">
-            A 1,000-guest hall and elegant lounge for weddings, birthdays, and
-            corporate events. Check availability and lock your date online — in
+            Two premium halls for weddings, conferences, banquets, and
+            celebrations. Check availability and lock your date online — in
             minutes.
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
             <Link
               href="/booking"
-              className="rounded-full bg-gold px-8 py-4 font-semibold text-white shadow-lg transition-transform hover:scale-105"
+              className="rounded-full bg-gold px-8 py-4 font-semibold text-navy shadow-lg transition-transform hover:scale-105"
             >
               Check Available Dates
             </Link>
             <Link
-              href="/about"
+              href="/halls"
               className="rounded-full border-2 border-cream/40 px-8 py-4 font-semibold text-cream transition-colors hover:bg-cream hover:text-navy"
             >
-              See the Hall
+              See Our Halls
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ============ SECTION 2: FEATURES ============
-          Three cards: capacity, amenities, location. */}
+      {/* ============ WHY CHOOSE US ============ */}
       <section className="bg-cream py-24">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-center font-heading text-4xl font-bold text-navy md:text-5xl">
             Why Book With Us
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-center text-navy/70">
-            Everything you need for an unforgettable event — in one elegant
-            space.
+            Every detail designed for a seamless event.
           </p>
 
           <div className="mt-16 grid gap-8 md:grid-cols-3">
             {[
               {
-                icon: "👥",
-                title: "1,000 Guests",
-                text: "Spacious hall with room for large weddings, conferences, and celebrations.",
+                icon: "🏛️",
+                title: "Two Premium Halls",
+                text: "The Big Hall seats 1,000. The Small Hall holds 150. Pick the space that fits your event.",
               },
               {
-                icon: "✨",
-                title: "Premium Amenities",
-                text: "Air conditioning, ample parking, stage, lighting, and a dedicated lounge.",
+                icon: "⚡",
+                title: "24/7 Power Supply",
+                text: "BEDC electricity backed by standby generators. Your event never stops.",
               },
               {
-                icon: "📍",
-                title: "Prime Location",
-                text: "Central Akure — easy to find, easy to reach, with secure surroundings.",
+                icon: "🚗",
+                title: "Spacious Parking",
+                text: "Room for ~70 vehicles on-site. No overflow, no stress for your guests.",
               },
             ].map((feature) => (
               <div
@@ -115,20 +132,86 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ============ SECTION 3: GALLERY ============
-          Grid of 6 images with a hover zoom. */}
+      {/* ============ OUR HALLS (dynamic from DB) ============ */}
       <section className="bg-white py-24">
+        <div className="mx-auto max-w-6xl px-6">
+          <h2 className="text-center font-heading text-4xl font-bold text-navy md:text-5xl">
+            Choose Your Space
+          </h2>
+          <p className="mx-auto mt-4 max-w-2xl text-center text-navy/70">
+            Two distinct halls — one unforgettable experience.
+          </p>
+
+          <div className="mt-16 grid gap-8 md:grid-cols-2">
+            {halls.map((hall) => (
+              <Link
+                key={hall.id}
+                href="/halls"
+                className="group overflow-hidden rounded-2xl bg-cream shadow-md transition-shadow hover:shadow-2xl"
+              >
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <Image
+                    src={
+                      hall.image_url ??
+                      FALLBACK_IMAGES[hall.slug] ??
+                      FALLBACK_IMAGES["big-hall"]
+                    }
+                    alt={hall.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                </div>
+                <div className="p-8">
+                  <h3 className="font-heading text-3xl font-bold text-navy">
+                    {hall.name}
+                  </h3>
+                  <p className="mt-1 text-sm text-navy/60 italic">
+                    {hall.tagline}
+                  </p>
+
+                  <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-navy/80">
+                    <div>
+                      👥 <strong>{fmt(hall.capacity_conf)}</strong> conference
+                    </div>
+                    <div>
+                      🍽️ <strong>{fmt(hall.capacity_banq)}</strong> banquet
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex items-end justify-between border-t border-navy/10 pt-6">
+                    <div>
+                      <div className="text-xs uppercase tracking-wider text-navy/50">
+                        From
+                      </div>
+                      <div className="font-heading text-2xl font-bold text-gold">
+                        ₦{fmt(hall.rental_price)}
+                      </div>
+                    </div>
+                    <span className="text-sm font-semibold text-navy group-hover:text-gold">
+                      View details →
+                    </span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ GALLERY PREVIEW ============ */}
+      <section className="bg-cream py-24">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-center font-heading text-4xl font-bold text-navy md:text-5xl">
             A Glimpse Inside
           </h2>
           <p className="mx-auto mt-4 max-w-2xl text-center text-navy/70">
-            From intimate gatherings to grand celebrations — the space adapts to
-            your vision.
+            From intimate gatherings to grand celebrations — the space adapts
+            to your vision.
           </p>
 
           <div className="mt-16 grid gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {galleryImages.map((src, i) => (
+            {GALLERY_PREVIEW.map((src, i) => (
               <div
                 key={i}
                 className="group relative aspect-square overflow-hidden rounded-xl"
@@ -143,23 +226,58 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+
+          <div className="mt-12 text-center">
+            <Link
+              href="/gallery"
+              className="inline-block rounded-full border-2 border-navy px-8 py-4 font-semibold text-navy transition-colors hover:bg-navy hover:text-cream"
+            >
+              See Full Gallery →
+            </Link>
+          </div>
         </div>
       </section>
 
-      {/* ============ SECTION 4: CTA ============
-          Big gold banner pushing to /booking. */}
+      {/* ============ SERVICES STRIP ============ */}
+      <section className="bg-navy py-20 text-cream">
+        <div className="mx-auto max-w-5xl px-6">
+          <h2 className="text-center font-heading text-3xl font-bold md:text-4xl">
+            Every Booking Includes
+          </h2>
+          <div className="mt-12 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
+            {[
+              { icon: "⏱️", label: "6-hour event duration" },
+              { icon: "⚡", label: "24/7 power — BEDC + generator" },
+              { icon: "🍽️", label: "Banquet tables & chairs" },
+              { icon: "🥤", label: "Drink cooling service" },
+              { icon: "👨‍🍳", label: "Outdoor wet-kitchen for caterers" },
+              { icon: "🚗", label: "Car park for ~70 vehicles" },
+            ].map((f) => (
+              <div
+                key={f.label}
+                className="rounded-2xl border border-cream/10 bg-navy/50 p-6 text-center"
+              >
+                <div className="text-3xl">{f.icon}</div>
+                <div className="mt-3 text-sm text-cream/80">{f.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ============ FINAL CTA ============ */}
       <section className="bg-gold py-24 text-center text-navy">
         <div className="mx-auto max-w-3xl px-6">
           <h2 className="font-heading text-4xl font-bold md:text-5xl">
             Ready to Lock Your Date?
           </h2>
           <p className="mt-4 text-lg text-navy/80">
-            Check availability in real time. Pick your date, pay a small
-            deposit, done.
+            Check availability in real time. Pick your hall, choose your date,
+            pay a small caution fee.
           </p>
           <Link
             href="/booking"
-            className="mt-10 inline-block rounded-full bg-gold px-10 py-4 text-lg font-semibold text-white shadow-xl transition-transform hover:scale-105"
+            className="mt-10 inline-block rounded-full bg-navy px-10 py-4 text-lg font-semibold text-cream shadow-xl transition-transform hover:scale-105"
           >
             Book Your Event →
           </Link>
