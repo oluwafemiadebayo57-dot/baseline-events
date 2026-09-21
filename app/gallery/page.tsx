@@ -1,6 +1,5 @@
 // app/gallery/page.tsx
-// Gallery — photos + video tours of both halls.
-// Placeholder images/videos for now; swap in real ones later.
+// Full gallery — categorized images with lightbox.
 
 "use client";
 
@@ -8,145 +7,210 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
-// ---------- MEDIA (swap these when real assets are ready) ----------
-// Each section gets its own image array. Replace the URLs when the
-// client sends real photos (or after we upload to Supabase Storage).
-
-const BIG_HALL_IMAGES = [
-  "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1000&q=80",
-  "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1000&q=80",
-  "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1000&q=80",
-  "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1000&q=80",
-  "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1000&q=80",
-  "https://images.unsplash.com/photo-1519741497674-611481863552?w=1000&q=80",
+// ---------- IMAGE CATEGORIES ----------
+const CATEGORIES = [
+  {
+    slug: "grand-hall",
+    title: "The Grand Hall",
+    description:
+      "Our flagship space — built for grand celebrations, weddings, and large conferences.",
+    images: [
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753151/OPT_6114.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986374/_MG_9986.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986386/_MG_9985.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986377/_MG_9943.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986400/_MG_9937.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986403/_MG_9982.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986404/_MG_9942.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986414/_MG_9948.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986424/_MG_0058.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986441/_MG_0054.jpg",
+    ],
+  },
+  {
+    slug: "facilities",
+    title: "Facilities & Amenities",
+    description:
+      "Every detail covered — from executive restrooms to 24/7 standby power.",
+    images: [
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986463/_MG_0010.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986462/_MG_0007.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986418/_MG_0065.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986394/_MG_9977.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986434/_MG_0049.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986370/_MG_9944.jpg",
+    ],
+  },
+  {
+    slug: "vip-lounge",
+    title: "VIP & Lounge Areas",
+    description:
+      "Private spaces for hosts, guests of honour, and intimate moments.",
+    images: [
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986423/_MG_0057.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789989180/_MG_0034.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986441/_MG_0036.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986452/_MG_0030.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986456/_MG_0028.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986457/_MG_0025.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986457/_MG_0027.jpg",
+    ],
+  },
+  {
+    slug: "exterior",
+    title: "Exterior & Grounds",
+    description:
+      "Arrive in style — spacious parking, elegant compound, and a grand entrance.",
+    images: [
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986465/_MG_0016.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986462/_MG_0019.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986407/_MG_0080.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986411/_MG_0077.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986399/_MG_0081.jpg",
+      "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986389/_MG_9968.jpg",
+    ],
+  },
 ];
 
-const SMALL_HALL_IMAGES = [
-  "https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?w=1000&q=80",
-  "https://images.unsplash.com/photo-1511795409834-ef04bbd61622?w=1000&q=80",
-  "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1000&q=80",
-  "https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1000&q=80",
-];
+// Hero image at the very top
+const HERO_IMAGE =
+  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753151/OPT_6114.jpg";
 
-// Video tours — replace these placeholder YouTube IDs with the real ones.
-// Just the ID, not the full URL. Example:
-// https://youtu.be/dQw4w9WgXcQ  →  "dQw4w9WgXcQ"
-const VIDEOS = [
-  { id: "dQw4w9WgXcQ", title: "The Big Hall — Full Tour" },
-  { id: "dQw4w9WgXcQ", title: "The Small Hall — Full Tour" },
-  { id: "dQw4w9WgXcQ", title: "Event Highlights" },
-];
-
-// ---------- PAGE ----------
 export default function GalleryPage() {
-  // Which image is open in the lightbox (null = closed)
-  const [lightbox, setLightbox] = useState<string | null>(null);
+  const [lightbox, setLightbox] = useState<{
+    categoryIndex: number;
+    imageIndex: number;
+  } | null>(null);
+
+  const allImages = CATEGORIES.flatMap((cat) =>
+    cat.images.map((url) => ({ url, category: cat.title }))
+  );
+
+  const currentImage = lightbox
+    ? allImages[
+        CATEGORIES.slice(0, lightbox.categoryIndex).reduce(
+          (sum, cat) => sum + cat.images.length,
+          0
+        ) + lightbox.imageIndex
+      ]
+    : null;
+
+  const currentIndex = lightbox
+    ? CATEGORIES.slice(0, lightbox.categoryIndex).reduce(
+        (sum, cat) => sum + cat.images.length,
+        0
+      ) + lightbox.imageIndex
+    : 0;
+
+  function openLightbox(categoryIndex: number, imageIndex: number) {
+    setLightbox({ categoryIndex, imageIndex });
+  }
+
+  function closeLightbox() {
+    setLightbox(null);
+  }
+
+  function nextImage(e?: React.MouseEvent) {
+    e?.stopPropagation();
+    if (!lightbox) return;
+    const nextIndex = (currentIndex + 1) % allImages.length;
+    let remaining = nextIndex;
+    for (let c = 0; c < CATEGORIES.length; c++) {
+      if (remaining < CATEGORIES[c].images.length) {
+        setLightbox({ categoryIndex: c, imageIndex: remaining });
+        return;
+      }
+      remaining -= CATEGORIES[c].images.length;
+    }
+  }
+
+  function prevImage(e?: React.MouseEvent) {
+    e?.stopPropagation();
+    if (!lightbox) return;
+    const prevIndex =
+      (currentIndex - 1 + allImages.length) % allImages.length;
+    let remaining = prevIndex;
+    for (let c = 0; c < CATEGORIES.length; c++) {
+      if (remaining < CATEGORIES[c].images.length) {
+        setLightbox({ categoryIndex: c, imageIndex: remaining });
+        return;
+      }
+      remaining -= CATEGORIES[c].images.length;
+    }
+  }
 
   return (
     <main className="bg-cream">
-      {/* Header */}
-      <section className="bg-navy py-20 text-center text-cream">
-        <div className="mx-auto max-w-3xl px-6">
+      {/* ============ HERO ============ */}
+      <section className="relative overflow-hidden bg-navy py-32 text-center text-cream md:py-40">
+        <div className="absolute inset-0">
+          <Image
+            src={HERO_IMAGE}
+            alt="Baseline Event Centre"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover opacity-40"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/70 to-navy/40" />
+        </div>
+
+        <div className="relative z-10 mx-auto max-w-3xl px-6">
           <p className="mb-4 text-sm uppercase tracking-[0.3em] text-gold">
             See It Before You Book
           </p>
           <h1 className="font-heading text-5xl font-bold md:text-6xl">
             The <span className="text-gold">Gallery</span>
           </h1>
-          <p className="mt-6 text-lg text-cream/70">
-            Real photos. Real moments. Real space.
+          <p className="mt-6 text-lg text-cream/80">
+            {allImages.length} photos across every corner of Baseline Event
+            Centre.
           </p>
         </div>
       </section>
 
-      {/* Big Hall images */}
-      <section className="py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="flex items-end justify-between">
-            <div>
-              <h2 className="font-heading text-4xl font-bold text-navy">
-                The Big Hall
-              </h2>
-              <p className="mt-1 text-navy/60">
-                Up to 1,000 guests. Grand setting, unforgettable events.
-              </p>
-            </div>
-          </div>
+      {/* ============ IMAGE SECTIONS ============ */}
+      {CATEGORIES.map((category, categoryIndex) => (
+        <section
+          key={category.slug}
+          className={`py-20 ${
+            categoryIndex % 2 === 0 ? "bg-cream" : "bg-white"
+          }`}
+        >
+          <div className="mx-auto max-w-6xl px-6">
+            <h2 className="font-heading text-4xl font-bold text-navy md:text-5xl">
+              {category.title}
+            </h2>
+            <p className="mt-3 max-w-2xl text-navy/70">
+              {category.description}
+            </p>
 
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {BIG_HALL_IMAGES.map((src, i) => (
-              <GalleryTile
-                key={i}
-                src={src}
-                alt={`Big Hall ${i + 1}`}
-                onClick={() => setLightbox(src)}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Small Hall images */}
-      <section className="bg-white py-20">
-        <div className="mx-auto max-w-6xl px-6">
-          <div className="flex items-end justify-between">
-            <div>
-              <h2 className="font-heading text-4xl font-bold text-navy">
-                The Small Hall
-              </h2>
-              <p className="mt-1 text-navy/60">
-                Up to 150 guests. Intimate, elegant, focused.
-              </p>
-            </div>
-          </div>
-
-          <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {SMALL_HALL_IMAGES.map((src, i) => (
-              <GalleryTile
-                key={i}
-                src={src}
-                alt={`Small Hall ${i + 1}`}
-                onClick={() => setLightbox(src)}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Videos */}
-      <section className="bg-navy py-20 text-cream">
-        <div className="mx-auto max-w-6xl px-6">
-          <h2 className="text-center font-heading text-4xl font-bold md:text-5xl">
-            Video <span className="text-gold">Tours</span>
-          </h2>
-          <p className="mx-auto mt-4 max-w-2xl text-center text-cream/70">
-            Walk through both halls without leaving your seat.
-          </p>
-
-          <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-            {VIDEOS.map((v, i) => (
-              <div
-                key={i}
-                className="overflow-hidden rounded-2xl border border-cream/10 bg-navy/50"
-              >
-                <div className="relative aspect-video">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${v.id}`}
-                    title={v.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="absolute inset-0 h-full w-full"
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {category.images.map((src, imageIndex) => (
+                <button
+                  key={src}
+                  onClick={() => openLightbox(categoryIndex, imageIndex)}
+                  className="group relative aspect-square overflow-hidden rounded-xl shadow-sm transition-shadow hover:shadow-xl"
+                >
+                  <Image
+                    src={src}
+                    alt={`${category.title} — image ${imageIndex + 1}`}
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
                   />
-                </div>
-                <div className="p-4 text-sm text-cream/80">{v.title}</div>
-              </div>
-            ))}
+                  <div className="absolute inset-0 flex items-center justify-center bg-navy/0 opacity-0 transition-all group-hover:bg-navy/40 group-hover:opacity-100">
+                    <span className="text-3xl text-cream">⤢</span>
+                  </div>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ))}
 
-      {/* CTA */}
-      <section className="py-20 text-center">
+      {/* ============ CTA ============ */}
+      <section className="py-24 text-center">
         <div className="mx-auto max-w-2xl px-6">
           <h2 className="font-heading text-4xl font-bold text-navy">
             Like what you see?
@@ -163,60 +227,57 @@ export default function GalleryPage() {
         </div>
       </section>
 
-      {/* Lightbox — click any image to open full-screen */}
-      {lightbox && (
+      {/* ============ LIGHTBOX ============ */}
+      {lightbox && currentImage && (
         <div
-          onClick={() => setLightbox(null)}
+          onClick={closeLightbox}
           className="fixed inset-0 z-[100] flex items-center justify-center bg-navy/95 p-4"
         >
           <button
-            onClick={() => setLightbox(null)}
-            className="absolute top-6 right-6 text-3xl text-cream/80 hover:text-cream"
+            onClick={closeLightbox}
+            className="absolute top-6 right-6 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-cream/10 text-2xl text-cream/90 transition-colors hover:bg-cream/20"
             aria-label="Close"
           >
             ✕
           </button>
-          <div className="relative aspect-[4/3] w-full max-w-5xl">
-            <Image
-              src={lightbox}
-              alt="Full view"
-              fill
-              sizes="100vw"
-              className="object-contain"
-            />
+
+          <button
+            onClick={prevImage}
+            className="absolute left-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-cream/10 text-2xl text-cream/90 transition-colors hover:bg-cream/20 md:left-8 md:h-16 md:w-16"
+            aria-label="Previous image"
+          >
+            ‹
+          </button>
+
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-h-[85vh] w-full max-w-5xl"
+          >
+            <div className="relative aspect-[4/3] w-full">
+              <Image
+                src={currentImage.url}
+                alt={currentImage.category}
+                fill
+                sizes="100vw"
+                className="object-contain"
+              />
+            </div>
+            <div className="mt-4 text-center text-sm text-cream/70">
+              <span className="text-gold">{currentImage.category}</span>
+              <span className="mx-2">·</span>
+              {currentIndex + 1} / {allImages.length}
+            </div>
           </div>
+
+          <button
+            onClick={nextImage}
+            className="absolute right-4 z-10 flex h-12 w-12 items-center justify-center rounded-full bg-cream/10 text-2xl text-cream/90 transition-colors hover:bg-cream/20 md:right-8 md:h-16 md:w-16"
+            aria-label="Next image"
+          >
+            ›
+          </button>
         </div>
       )}
     </main>
-  );
-}
-
-// ---------- Small reusable image tile ----------
-function GalleryTile({
-  src,
-  alt,
-  onClick,
-}: {
-  src: string;
-  alt: string;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className="group relative aspect-square overflow-hidden rounded-xl shadow-sm transition-shadow hover:shadow-xl"
-    >
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        className="object-cover transition-transform duration-700 group-hover:scale-110"
-      />
-      {/* Hover overlay with a "+" icon */}
-      <div className="absolute inset-0 flex items-center justify-center bg-navy/0 opacity-0 transition-all group-hover:bg-navy/40 group-hover:opacity-100">
-        <span className="text-3xl text-cream">⤢</span>
-      </div>
-    </button>
   );
 }

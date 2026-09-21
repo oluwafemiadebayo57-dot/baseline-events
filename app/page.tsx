@@ -16,6 +16,7 @@ type Hall = {
   rental_price: number;
   caution_fee: number;
   image_url: string | null;
+  gallery: string[] | null;
 };
 
 const fmt = (n: number) => n.toLocaleString("en-NG");
@@ -25,19 +26,19 @@ const HERO_IMAGE =
   "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753151/OPT_6114.jpg";
 
 const GALLERY_PREVIEW = [
-  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753147/OPT_6598.jpg",
-  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753151/OPT_6114.jpg",
-  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753148/OPT_6453.jpg",
-  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753147/OPT_6598.jpg",
-  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753151/OPT_6114.jpg",
-  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753148/OPT_6453.jpg",
+  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986403/_MG_9982.jpg",
+  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986404/_MG_9942.jpg",
+  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986414/_MG_9948.jpg",
+  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986423/_MG_0057.jpg",
+  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986449/_MG_0032.jpg",
+  "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986465/_MG_0016.jpg",
 ];
 
 const FALLBACK_IMAGES: Record<string, string> = {
   "big-hall":
-    "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753147/OPT_6598.jpg",
+    "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753151/OPT_6114.jpg",
   "small-hall":
-    "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753148/OPT_6453.jpg",
+    "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986441/_MG_0039.jpg",
 };
 
 export default async function HomePage() {
@@ -56,7 +57,6 @@ export default async function HomePage() {
             sizes="100vw"
             className="object-cover opacity-50"
           />
-          {/* Gradient overlay for readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-navy via-navy/60 to-navy/30" />
         </div>
 
@@ -132,7 +132,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* ============ OUR HALLS (dynamic from DB) ============ */}
+      {/* ============ OUR HALLS ============ */}
       <section className="bg-white py-24">
         <div className="mx-auto max-w-6xl px-6">
           <h2 className="text-center font-heading text-4xl font-bold text-navy md:text-5xl">

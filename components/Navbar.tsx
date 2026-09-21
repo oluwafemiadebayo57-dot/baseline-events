@@ -12,20 +12,21 @@ export default function Navbar() {
 
   // The nav links. Kept in an array so we can loop over them
   // instead of typing each one twice (desktop + mobile).
-const links = [
-  { href: "/",        label: "Home" },
-  { href: "/halls",   label: "Halls" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/about",   label: "About" },
-  { href: "/booking", label: "Book Now" },
-  { href: "/contact", label: "Contact" },
-];
+  const links = [
+    { href: "/",        label: "Home" },
+    { href: "/halls",   label: "Halls" },
+    { href: "/gallery", label: "Gallery" },
+    { href: "/about",   label: "About" },
+    { href: "/booking", label: "Book Now" },
+    { href: "/contact", label: "Contact" },
+  ];
+
   return (
     <header className="sticky top-0 z-50 bg-navy text-cream shadow-md">
       <nav className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
         {/* Logo / hall name — always links home */}
         <Link href="/" className="font-heading text-2xl font-bold tracking-wide">
-          Baseline <span className="text-gold">Events</span>
+          Baseline <span className="text-gold">Event Centre</span>
         </Link>
 
         {/* Desktop links — hidden on small screens */}

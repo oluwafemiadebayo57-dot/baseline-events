@@ -8,8 +8,10 @@ export default async function Footer() {
   const settings = await getSettings();
 
   const phone = settings?.phone ?? "0812 667 1066";
-  const email = settings?.email ?? "info@baselineeventcentre.com";
-  const address = settings?.address ?? "Akure, Ondo State, Nigeria";
+  const email = settings?.email ?? "info@baseline-events-centre.com";
+  const address =
+    settings?.address ??
+    "8 Gaga Road, Off Idanre Garage, Oke-Aro, Ondo State";
 
   // Convert Nigerian 0-prefix to +234 for WhatsApp
   const digits = phone.replace(/[^0-9]/g, "");
@@ -62,10 +64,7 @@ export default async function Footer() {
             <li>📍 {address}</li>
             <li>
               📞{" "}
-              <a
-                href={`tel:+${whatsapp}`}
-                className="hover:text-gold"
-              >
+              <a href={`tel:+${whatsapp}`} className="hover:text-gold">
                 {phone}
               </a>
             </li>

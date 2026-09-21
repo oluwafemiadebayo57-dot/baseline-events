@@ -1,6 +1,6 @@
 // app/booking/page.tsx
 // Multi-hall booking flow:
-//   1. Pick a hall
+//   1. Pick a hall (with image)
 //   2. Pick a date from that hall's calendar
 //   3. Fill in details
 //   4. See that hall's price + bank details
@@ -8,6 +8,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import {
   createBooking,
   getBookedDatesForHall,
@@ -25,6 +26,7 @@ type Hall = {
   rental_price: number;
   caution_fee: number;
   facilities: string[];
+  image_url: string | null;
 };
 
 // Format numbers with commas: 3500000 → 3,500,000
@@ -221,28 +223,41 @@ export default function BookingPage() {
                     setSelectedHall(hall);
                     setSelectedDate(null);
                   }}
-                  className={`rounded-2xl border-2 p-6 text-left transition-all ${
+                  className={`overflow-hidden rounded-2xl border-2 text-left transition-all ${
                     active
                       ? "border-gold bg-white shadow-lg"
                       : "border-navy/10 bg-white hover:border-gold/50"
                   }`}
                 >
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-heading text-2xl font-bold text-navy">
-                      {hall.name}
-                    </h3>
-                    {active && <span className="text-2xl text-gold">✓</span>}
-                  </div>
-                  <p className="mt-1 text-sm text-navy/60">{hall.tagline}</p>
-                  <div className="mt-4 space-y-1 text-sm">
-                    <div className="text-navy/80">
-                      👥 Up to <strong>{fmt(hall.capacity_conf)}</strong> guests
+                  {hall.image_url && (
+                    <div className="relative aspect-[16/9] overflow-hidden">
+                      <Image
+                        src={hall.image_url}
+                        alt={hall.name}
+                        fill
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-cover"
+                      />
                     </div>
-                    <div className="text-navy/80">
-                      💰 <strong>₦{fmt(hall.rental_price)}</strong> rental
+                  )}
+                  <div className="p-6">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-heading text-2xl font-bold text-navy">
+                        {hall.name}
+                      </h3>
+                      {active && <span className="text-2xl text-gold">✓</span>}
                     </div>
-                    <div className="text-navy/80">
-                      🔒 <strong>₦{fmt(hall.caution_fee)}</strong> caution fee
+                    <p className="mt-1 text-sm text-navy/60">{hall.tagline}</p>
+                    <div className="mt-4 space-y-1 text-sm">
+                      <div className="text-navy/80">
+                        👥 Up to <strong>{fmt(hall.capacity_conf)}</strong> guests
+                      </div>
+                      <div className="text-navy/80">
+                        💰 <strong>₦{fmt(hall.rental_price)}</strong> rental
+                      </div>
+                      <div className="text-navy/80">
+                        🔒 <strong>₦{fmt(hall.caution_fee)}</strong> caution fee
+                      </div>
                     </div>
                   </div>
                 </button>
