@@ -4,6 +4,7 @@
 
 "use client";
 
+import AdminHeader from "@/components/admin/AdminHeader";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
@@ -104,11 +105,6 @@ export default function AdminDashboard() {
     await refresh();
   }
 
-  async function handleSignOut() {
-    await supabase.auth.signOut();
-    router.push("/admin/login");
-  }
-
   if (loading) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-cream">
@@ -118,36 +114,12 @@ export default function AdminDashboard() {
   }
 
   return (
-    <main className="min-h-screen bg-cream py-10">
-      <div className="mx-auto max-w-6xl px-6">
-        {/* Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="font-heading text-4xl font-bold text-navy">
-              Dashboard
-            </h1>
-            <p className="mt-1 text-sm text-navy/60">
-              Manage bookings for Baseline Event Centre
-            </p>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => router.push("/admin/settings")}
-              className="rounded-full border border-navy/20 px-5 py-2 text-sm hover:bg-navy hover:text-cream"
-            >
-              Settings
-            </button>
-            <button
-              onClick={handleSignOut}
-              className="rounded-full border border-navy/20 px-5 py-2 text-sm hover:bg-navy hover:text-cream"
-            >
-              Sign Out
-            </button>
-          </div>
-        </div>
+    <main className="min-h-screen bg-cream">
+      <AdminHeader />
 
+      <div className="mx-auto max-w-6xl px-6 py-10">
         {/* Stat cards */}
-        <div className="mt-10 grid gap-4 sm:grid-cols-3">
+        <div className="grid gap-4 sm:grid-cols-3">
           <div className="rounded-2xl bg-white p-6 shadow-sm">
             <div className="text-3xl font-bold text-gold">
               {bookings.filter((b) => b.status === "pending").length}
@@ -239,8 +211,8 @@ export default function AdminDashboard() {
                   }
                   className="rounded-lg border border-navy/20 px-4 py-3 focus:border-gold focus:outline-none"
                 >
-                  <option value="big-hall">The Big Hall</option>
-                  <option value="small-hall">The Small Hall</option>
+                  <option value="big-hall">The Grand Ballroom</option>
+                  <option value="small-hall">The Mini Ballroom</option>
                 </select>
                 <select
                   required
@@ -311,7 +283,9 @@ export default function AdminDashboard() {
                         </span>
                         {b.hall_slug && (
                           <span className="rounded-full bg-navy/10 px-3 py-1 text-xs font-semibold text-navy">
-                            {b.hall_slug === "big-hall" ? "The Big Hall" : "The Small Hall"}
+                            {b.hall_slug === "big-hall"
+                              ? "The Grand Ballroom"
+                              : "The Mini Ballroom"}
                           </span>
                         )}
                       </div>

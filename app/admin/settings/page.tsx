@@ -4,6 +4,7 @@
 
 "use client";
 
+import AdminHeader from "@/components/admin/AdminHeader";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase-browser";
@@ -82,27 +83,11 @@ export default function SettingsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-cream py-10">
-      <div className="mx-auto max-w-3xl px-6">
-        {/* Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <h1 className="font-heading text-4xl font-bold text-navy">
-              Settings
-            </h1>
-            <p className="mt-1 text-sm text-navy/60">
-              Update the information shown on your public site.
-            </p>
-          </div>
-          <button
-            onClick={() => router.push("/admin")}
-            className="rounded-full border border-navy/20 px-5 py-2 text-sm hover:bg-navy hover:text-cream"
-          >
-            ← Back to Dashboard
-          </button>
-        </div>
+    <main className="min-h-screen bg-cream">
+      <AdminHeader />
 
-        <form onSubmit={handleSubmit} className="mt-10 space-y-8">
+      <div className="mx-auto max-w-3xl px-6 py-10">
+        <form onSubmit={handleSubmit} className="space-y-8">
           {/* Bank details */}
           <section className="rounded-2xl bg-white p-6 shadow-sm">
             <h2 className="font-heading text-xl font-semibold text-navy">
@@ -149,20 +134,20 @@ export default function SettingsPage() {
                 label="Phone"
                 value={form.phone}
                 onChange={(v) => setForm({ ...form, phone: v })}
-                placeholder="+234 800 000 0000"
+                placeholder="0812 667 1066"
               />
               <Field
                 label="Email"
                 value={form.email}
                 onChange={(v) => setForm({ ...form, email: v })}
-                placeholder="info@baselineeventcentre.com"
+                placeholder="info@baseline-events-centre.com"
               />
               <div className="md:col-span-2">
                 <Field
                   label="Address"
                   value={form.address}
                   onChange={(v) => setForm({ ...form, address: v })}
-                  placeholder="Akure, Ondo State, Nigeria"
+                  placeholder="8 Gaga Road, Off Idanre Garage, Oke-Aro, Ondo State"
                 />
               </div>
             </div>
