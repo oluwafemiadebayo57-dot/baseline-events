@@ -1,12 +1,29 @@
 // lib/actions.ts
 // Server Actions — functions that run on the server, not the browser.
-// This is where we safely write to the database.
+// This is where we safely write to the database and send emails.
 
 "use server";
 
+import { Resend } from "resend";
 import { getAdminClient } from "./supabase";
 
-// Save a new booking. Called when the client submits the form.
+// Initialize Resend with the API key from env.
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Where notifications go
+const ADMIN_EMAILS = [
+  process.env.NOTIFICATION_EMAIL,
+  process.env.OWNER_EMAIL,
+].filter(Boolean) as string[];
+
+// Format a hall slug into a friendly name.
+function hallName(slug: string) {
+  return slug === "big-hall" ? "The Grand Ballroom" : "The Mini Ballroom";
+}
+
+// ---------- BOOKINGS ----------
+
+// Save a new booking and send notification emails.
 export async function createBooking(formData: {
   event_date: string;
   name: string;
@@ -32,10 +49,78 @@ export async function createBooking(formData: {
     return { success: false, error: error.message };
   }
 
+  const hall = hallName(formData.hall_slug);
+
+  // Notify the admin(s). Don't fail the booking if email fails.
+  try {
+    await resend.emails.send({
+      from: "Baseline Bookings <bookings@baselineeventcentre.com>",
+      to: ADMIN_EMAILS,
+      subject: `🔔 New Booking — ${hall} on ${formData.event_date}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #0B1F3A;">
+          <h2 style="color: #0B1F3A; margin-bottom: 4px;">New Booking Received</h2>
+          <p style="color: #666; margin-top: 0;">A new booking was just submitted.</p>
+
+          <table style="width: 100%; border-collapse: collapse; margin-top: 24px;">
+            <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666; width: 40%;">Hall</td><td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: 600;">${hall}</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Date</td><td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: 600;">${formData.event_date}</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Client</td><td style="padding: 12px; border-bottom: 1px solid #eee;">${formData.name}</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Phone</td><td style="padding: 12px; border-bottom: 1px solid #eee;">${formData.phone}</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Email</td><td style="padding: 12px; border-bottom: 1px solid #eee;">${formData.email}</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Event Type</td><td style="padding: 12px; border-bottom: 1px solid #eee;">${formData.event_type}</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Status</td><td style="padding: 12px; border-bottom: 1px solid #eee; color: #E8543A; font-weight: 600;">PENDING — awaiting payment</td></tr>
+          </table>
+
+          <div style="margin-top: 28px; padding: 16px; background: #FBF6EF; border-left: 4px solid #D4AF37; border-radius: 4px;">
+            <strong>Action required:</strong> Log in to your admin dashboard to confirm this booking after payment is received.
+          </div>
+
+          <p style="margin-top: 32px; color: #999; font-size: 12px;">— Baseline Event Centre Booking System</p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("Admin notification email failed:", err);
+    // Do NOT return failure — booking already saved.
+  }
+
+  // Send confirmation to the client
+  try {
+    await resend.emails.send({
+      from: "Baseline Event Centre <bookings@baselineeventcentre.com>",
+      to: formData.email,
+      subject: `Booking Request Received — ${hall}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #0B1F3A;">
+          <h2 style="color: #0B1F3A;">Thank you, ${formData.name}.</h2>
+          <p>We've received your booking request for <strong>${hall}</strong>.</p>
+
+          <table style="width: 100%; border-collapse: collapse; margin-top: 24px;">
+            <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666; width: 40%;">Hall</td><td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: 600;">${hall}</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Date</td><td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: 600;">${formData.event_date}</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Event</td><td style="padding: 12px; border-bottom: 1px solid #eee;">${formData.event_type}</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Status</td><td style="padding: 12px; border-bottom: 1px solid #eee; color: #E8543A; font-weight: 600;">Awaiting deposit payment</td></tr>
+          </table>
+
+          <div style="margin-top: 28px; padding: 16px; background: #FBF6EF; border-left: 4px solid #D4AF37; border-radius: 4px;">
+            <strong>Next step:</strong> Transfer the caution fee to the bank account shown on the website to lock in your date.
+          </div>
+
+          <p style="margin-top: 24px;">Once payment is confirmed, you'll receive a final confirmation email.</p>
+
+          <p style="margin-top: 32px; color: #666;">Warm regards,<br/><strong>Baseline Event Centre</strong><br/>Your Event, Our Priority</p>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("Client confirmation email failed:", err);
+  }
+
   return { success: true };
 }
 
-// Read the settings row (bank details).
+// Read the settings row (bank details etc.)
 export async function getSettings() {
   const supabase = getAdminClient();
   const { data, error } = await supabase.from("settings").select("*").single();
@@ -46,8 +131,7 @@ export async function getSettings() {
   return data;
 }
 
-// Get all booked dates (bookings + blocked dates) so the calendar can
-// show green/red. Called by the booking page.
+// Get all booked dates (bookings + blocked dates).
 export async function getBookedDates(): Promise<string[]> {
   const supabase = getAdminClient();
 
@@ -67,14 +151,13 @@ export async function getBookedDates(): Promise<string[]> {
     ...(bookings ?? []).map((b) => b.event_date),
     ...(blocked ?? []).map((b) => b.date),
   ];
-
   return Array.from(new Set(dates));
 }
 
-// Check if the currently logged-in user is an admin.
+// ---------- ADMIN AUTH ----------
+
 export async function checkAdmin() {
   const supabase = getAdminClient();
-
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return null;
 
@@ -87,7 +170,8 @@ export async function checkAdmin() {
   return data ? user : null;
 }
 
-// Get all bookings, newest first.
+// ---------- ADMIN DATA ----------
+
 export async function getAllBookings() {
   const supabase = getAdminClient();
   const { data, error } = await supabase
@@ -98,7 +182,6 @@ export async function getAllBookings() {
   return data ?? [];
 }
 
-// Get all manually blocked dates.
 export async function getBlockedDates() {
   const supabase = getAdminClient();
   const { data, error } = await supabase
@@ -109,7 +192,6 @@ export async function getBlockedDates() {
   return data ?? [];
 }
 
-// Change a booking's status (pending → confirmed, or → cancelled).
 export async function updateBookingStatus(id: string, status: string) {
   const supabase = getAdminClient();
   const { error } = await supabase
@@ -120,7 +202,6 @@ export async function updateBookingStatus(id: string, status: string) {
   return { success: true };
 }
 
-// Block or unblock a date manually.
 export async function toggleBlockedDate(date: string, reason?: string) {
   const supabase = getAdminClient();
 
@@ -142,13 +223,11 @@ export async function toggleBlockedDate(date: string, reason?: string) {
   return { success: true, action: "blocked" };
 }
 
-// Sign out the current user.
 export async function signOut() {
   const supabase = getAdminClient();
   await supabase.auth.signOut();
 }
 
-// Create a booking from the admin panel (offline/walk-in client).
 export async function createAdminBooking(formData: {
   event_date: string;
   name: string;
@@ -175,7 +254,8 @@ export async function createAdminBooking(formData: {
   return { success: true };
 }
 
-// Get all halls, ordered by display_order.
+// ---------- HALLS ----------
+
 export async function getHalls() {
   const supabase = getAdminClient();
   const { data, error } = await supabase
@@ -186,7 +266,6 @@ export async function getHalls() {
   return data ?? [];
 }
 
-// Get a single hall by its slug (e.g. 'big-hall').
 export async function getHallBySlug(slug: string) {
   const supabase = getAdminClient();
   const { data, error } = await supabase
@@ -198,7 +277,6 @@ export async function getHallBySlug(slug: string) {
   return data;
 }
 
-// Get booked dates for a SPECIFIC hall only.
 export async function getBookedDatesForHall(hallSlug: string): Promise<string[]> {
   const supabase = getAdminClient();
 
@@ -221,8 +299,9 @@ export async function getBookedDatesForHall(hallSlug: string): Promise<string[]>
   ];
   return Array.from(new Set(dates));
 }
-// Update the settings row.
-// Only the fields we pass get updated.
+
+// ---------- SETTINGS ----------
+
 export async function updateSettings(data: {
   bank_name?: string;
   account_name?: string;
