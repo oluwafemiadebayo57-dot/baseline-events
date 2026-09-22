@@ -4,6 +4,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getHalls } from "@/lib/actions";
+import type { Metadata } from "next";
 
 type Hall = {
   id: string;
@@ -20,6 +21,29 @@ type Hall = {
 };
 
 const fmt = (n: number) => n.toLocaleString("en-NG");
+
+export const metadata: Metadata = {
+  title: "Our Halls — Grand Ballroom & Mini Ballroom",
+  description:
+    "Two premium event halls in Akure. The Grand Ballroom seats 1,000 guests for conferences and 600 for banquets. The Mini Ballroom holds 150. See facilities, pricing, and photos.",
+  keywords: [
+    "event hall Akure",
+    "banquet hall Akure",
+    "conference venue Akure",
+    "wedding hall Ondo",
+    "Grand Ballroom Akure",
+    "Mini Ballroom Akure",
+  ],
+  openGraph: {
+    title: "Our Halls — Baseline Event Centre, Akure",
+    description:
+      "The Grand Ballroom (1,000 guests) and The Mini Ballroom (150 guests). See facilities, pricing, and photos.",
+    url: "https://baselineeventcentre.com/halls",
+    siteName: "Baseline Event Centre",
+    locale: "en_NG",
+    type: "website",
+  },
+};
 
 export default async function HallsPage() {
   const halls = (await getHalls()) as Hall[];

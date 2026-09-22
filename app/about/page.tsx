@@ -1,9 +1,36 @@
 // app/about/page.tsx
 // About page — updated for Baseline Event Centre.
 
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { getSettings } from "@/lib/actions";
+
+export const metadata: Metadata = {
+  title:
+    "About Us — Akure's Premier Event Centre | Baseline Event Centre",
+  description:
+    "Baseline Event Centre is Akure's top event venue for weddings, conferences, and celebrations. Two premium halls — The Grand Ballroom (1,000 guests) and The Mini Ballroom (150 guests). 24/7 power, spacious parking, and online booking.",
+  keywords: [
+    "event centre in Akure",
+    "wedding venue Akure",
+    "event hall Ondo State",
+    "conference venue Akure",
+    "banquet hall Nigeria",
+    "Baseline Event Centre",
+    "Grand Ballroom Akure",
+    "Mini Ballroom Akure",
+  ],
+  openGraph: {
+    title: "About Baseline Event Centre — Akure's Premier Event Venue",
+    description:
+      "Two premium halls for weddings, conferences, and celebrations in Akure, Ondo State.",
+    url: "https://baselineeventcentre.com/about",
+    siteName: "Baseline Event Centre",
+    locale: "en_NG",
+    type: "website",
+  },
+};
 
 export default async function AboutPage() {
   const settings = await getSettings();
@@ -29,8 +56,8 @@ export default async function AboutPage() {
       <section className="mx-auto grid max-w-6xl gap-12 px-6 py-24 md:grid-cols-2 md:items-center">
         <div className="relative aspect-[4/5] overflow-hidden rounded-2xl shadow-xl">
           <Image
-            src="https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=1000&q=80"
-            alt="Baseline Event Centre"
+            src="https://res.cloudinary.com/izxlyyn5/image/upload/v1789753151/OPT_6114.jpg"
+            alt="Baseline Event Centre — Akure's premier event venue"
             fill
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-cover"
@@ -50,9 +77,9 @@ export default async function AboutPage() {
               memorable moments.
             </p>
             <p>
-              <strong>The Big Hall</strong> seats up to 1,000 guests in
+              <strong>The Grand Ballroom</strong> seats up to 1,000 guests in
               conference style and 600 for banquets — built for grand
-              celebrations. <strong>The Small Hall</strong> holds up to 150
+              celebrations. <strong>The Mini Ballroom</strong> holds up to 150
               guests, perfect for intimate gatherings and focused events.
             </p>
             <p>

@@ -1,8 +1,7 @@
-// app/booking/page.tsx
-// Server component wrapper — provides SEO metadata for the booking page.
+// app/booking/metadata.ts
+// SEO metadata for the booking page.
 
 import type { Metadata } from "next";
-import BookingClient from "./BookingClient";
 
 export const metadata: Metadata = {
   title:
@@ -18,7 +17,8 @@ export const metadata: Metadata = {
     "Baseline Event Centre booking",
   ],
   openGraph: {
-    title: "Book Your Date — Baseline Event Centre, Akure",
+    title:
+      "Book Your Date — Baseline Event Centre, Akure",
     description:
       "Real-time availability for The Grand Ballroom and The Mini Ballroom. Book online in minutes.",
     url: "https://baselineeventcentre.com/booking",
@@ -27,7 +27,3 @@ export const metadata: Metadata = {
     type: "website",
   },
 };
-
-export default function BookingPage() {
-  return <BookingClient />;
-}

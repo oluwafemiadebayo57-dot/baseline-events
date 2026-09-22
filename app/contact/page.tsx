@@ -2,6 +2,27 @@
 // Contact page — reads real info from the settings table.
 
 import { getSettings } from "@/lib/actions";
+import type { Metadata } from "next";
+export const metadata: Metadata = {
+  title: "Contact Us — Visit Baseline Event Centre, Akure",
+  description:
+    "Visit Baseline Event Centre at 8 Gaga Road, Off Idanre Garage, Oke-Aro, Akure. Call 0812 667 1066, message us on WhatsApp, or book your event online.",
+  keywords: [
+    "contact Baseline Event Centre",
+    "event centre Akure address",
+    "event hall phone number Akure",
+    "Baseline Event Centre location",
+  ],
+  openGraph: {
+    title: "Contact Us — Baseline Event Centre, Akure",
+    description:
+      "Visit us at 8 Gaga Road, Off Idanre Garage, Oke-Aro, Akure. Call 0812 667 1066 or book online.",
+    url: "https://baselineeventcentre.com/contact",
+    siteName: "Baseline Event Centre",
+    locale: "en_NG",
+    type: "website",
+  },
+};
 
 export default async function ContactPage() {
   const settings = await getSettings();

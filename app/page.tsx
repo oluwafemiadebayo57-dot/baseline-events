@@ -5,6 +5,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getHalls } from "@/lib/actions";
+import type { Metadata } from "next";
 
 type Hall = {
   id: string;
@@ -39,6 +40,29 @@ const FALLBACK_IMAGES: Record<string, string> = {
     "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753151/OPT_6114.jpg",
   "small-hall":
     "https://res.cloudinary.com/izxlyyn5/image/upload/v1789986441/_MG_0039.jpg",
+};
+
+export const metadata: Metadata = {
+  title: "Event Centre in Akure — Weddings, Conferences & Banquets",
+  description:
+    "Baseline Event Centre — Akure's top choice for weddings, conferences, banquets, and celebrations. Two premium halls: The Grand Ballroom (1,000 guests) and The Mini Ballroom (150 guests). Book online in minutes.",
+  keywords: [
+    "event centre in Akure",
+    "event hall Akure",
+    "wedding venue Akure",
+    "conference hall Ondo",
+    "banquet hall Akure",
+    "Baseline Event Centre",
+  ],
+  openGraph: {
+    title: "Baseline Event Centre — Akure's Premier Event Venue",
+    description:
+      "Two premium halls for weddings, conferences, and celebrations. Book online in minutes.",
+    url: "https://baselineeventcentre.com",
+    siteName: "Baseline Event Centre",
+    locale: "en_NG",
+    type: "website",
+  },
 };
 
 export default async function HomePage() {
