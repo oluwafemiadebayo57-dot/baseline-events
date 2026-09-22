@@ -1,9 +1,9 @@
 // app/booking/BookingClient.tsx
-// Multi-hall booking flow (client component):
+// Reservation flow (client component):
 //   1. Pick a hall (with image)
 //   2. Pick a date from that hall's calendar
 //   3. Fill in details
-//   4. See that hall's price + bank details
+//   4. Reservation saved + emails sent to owner and client
 
 "use client";
 
@@ -13,7 +13,6 @@ import {
   createBooking,
   getBookedDatesForHall,
   getHalls,
-  getSettings,
 } from "@/lib/actions";
 
 type Hall = {
@@ -41,12 +40,6 @@ export default function BookingClient() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const [bankDetails, setBankDetails] = useState({
-    bank: "",
-    accountName: "",
-    accountNumber: "",
-  });
-
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -56,16 +49,6 @@ export default function BookingClient() {
 
   useEffect(() => {
     getHalls().then((h) => setHalls(h as Hall[])).catch(console.error);
-
-    getSettings().then((s) => {
-      if (s) {
-        setBankDetails({
-          bank: s.bank_name ?? "",
-          accountName: s.account_name ?? "",
-          accountNumber: s.account_number ?? "",
-        });
-      }
-    });
   }, []);
 
   useEffect(() => {
@@ -123,14 +106,21 @@ export default function BookingClient() {
                 ✓
               </div>
               <h2 className="mt-4 font-heading text-3xl font-bold text-navy">
-                Almost Done
+                Reservation Received
               </h2>
-              <p className="mt-2 text-navy/70">
-                Transfer the caution fee to secure {selectedHall.name}.
+              <p className="mt-4 text-navy/70">
+                Thank you, <strong>{form.name}</strong>. We&apos;ve received
+                your reservation request for <strong>{selectedHall.name}</strong>{" "}
+                on <strong>{selectedDate}</strong>.
+              </p>
+              <p className="mt-3 text-navy/70">
+                Our team will contact you shortly on{" "}
+                <strong>{form.phone}</strong> to confirm availability and
+                discuss next steps.
               </p>
             </div>
 
-            <div className="mt-8 space-y-4 rounded-xl bg-cream p-6">
+            <div className="mt-8 rounded-xl bg-cream p-6">
               <div className="flex justify-between border-b border-navy/10 pb-3">
                 <span className="text-navy/60">Hall</span>
                 <span className="font-semibold text-navy">{selectedHall.name}</span>
@@ -139,39 +129,15 @@ export default function BookingClient() {
                 <span className="text-navy/60">Date</span>
                 <span className="font-semibold text-navy">{selectedDate}</span>
               </div>
-              <div className="flex justify-between border-b border-navy/10 pb-3">
-                <span className="text-navy/60">Rental price</span>
-                <span className="font-semibold text-navy">
-                  ₦{fmt(selectedHall.rental_price)}
-                </span>
-              </div>
-              <div className="flex justify-between border-b border-navy/10 pb-3">
-                <span className="text-navy/60">Caution fee to pay now</span>
-                <span className="font-semibold text-gold text-lg">
-                  ₦{fmt(selectedHall.caution_fee)}
-                </span>
-              </div>
-              <div className="flex justify-between border-b border-navy/10 pb-3">
-                <span className="text-navy/60">Bank</span>
-                <span className="font-semibold text-navy">{bankDetails.bank}</span>
-              </div>
-              <div className="flex justify-between border-b border-navy/10 pb-3">
-                <span className="text-navy/60">Account name</span>
-                <span className="font-semibold text-navy">
-                  {bankDetails.accountName}
-                </span>
-              </div>
               <div className="flex justify-between pt-1">
-                <span className="text-navy/60">Account number</span>
-                <span className="font-mono text-lg font-bold text-gold">
-                  {bankDetails.accountNumber}
-                </span>
+                <span className="text-navy/60">Event Type</span>
+                <span className="font-semibold text-navy">{form.event_type}</span>
               </div>
             </div>
 
             <p className="mt-6 text-center text-sm text-navy/60">
-              After payment, we&apos;ll confirm your booking and send you a
-              receipt.
+              A confirmation has also been sent to{" "}
+              <strong>{form.email}</strong>.
             </p>
 
             <button
@@ -183,7 +149,7 @@ export default function BookingClient() {
               }}
               className="mt-6 w-full rounded-full border border-navy/20 py-3 text-sm text-navy/70 hover:bg-navy hover:text-cream"
             >
-              ← Book another event
+              ← Make another reservation
             </button>
           </div>
         </div>
@@ -197,10 +163,11 @@ export default function BookingClient() {
       <div className="mx-auto max-w-4xl px-6">
         <div className="text-center">
           <h1 className="font-heading text-5xl font-bold text-navy">
-            Book Your Date
+            Reserve Your Date
           </h1>
           <p className="mt-3 text-navy/70">
-            Pick a hall, select your date, and lock it in.
+            Pick a hall, select your date, and send us your details. We&apos;ll
+            contact you to confirm.
           </p>
         </div>
 
@@ -352,7 +319,7 @@ export default function BookingClient() {
               3. Your details
             </h2>
             <p className="mt-1 text-sm text-navy/60">
-              Booking <strong>{selectedHall.name}</strong> for{" "}
+              Reserving <strong>{selectedHall.name}</strong> for{" "}
               <strong>{selectedDate}</strong>
             </p>
 
@@ -408,7 +375,7 @@ export default function BookingClient() {
               disabled={loading}
               className="mt-8 w-full rounded-full bg-gold py-4 font-semibold text-navy shadow-lg transition-transform hover:scale-[1.02] disabled:opacity-50"
             >
-              {loading ? "Saving..." : "Continue to Payment →"}
+              {loading ? "Sending..." : "Send Reservation Request →"}
             </button>
           </form>
         )}

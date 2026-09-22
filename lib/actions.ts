@@ -23,7 +23,7 @@ function hallName(slug: string) {
 
 // ---------- BOOKINGS ----------
 
-// Save a new booking and send notification emails.
+// Save a new reservation and send notification emails.
 export async function createBooking(formData: {
   event_date: string;
   name: string;
@@ -56,11 +56,11 @@ export async function createBooking(formData: {
     await resend.emails.send({
       from: "Baseline Bookings <bookings@baselineeventcentre.com>",
       to: ADMIN_EMAILS,
-      subject: `🔔 New Booking — ${hall} on ${formData.event_date}`,
+      subject: `🔔 New Reservation — ${hall} on ${formData.event_date}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #0B1F3A;">
-          <h2 style="color: #0B1F3A; margin-bottom: 4px;">New Booking Received</h2>
-          <p style="color: #666; margin-top: 0;">A new booking was just submitted.</p>
+          <h2 style="color: #0B1F3A; margin-bottom: 4px;">New Reservation Received</h2>
+          <p style="color: #666; margin-top: 0;">A new reservation was just submitted.</p>
 
           <table style="width: 100%; border-collapse: collapse; margin-top: 24px;">
             <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666; width: 40%;">Hall</td><td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: 600;">${hall}</td></tr>
@@ -69,11 +69,11 @@ export async function createBooking(formData: {
             <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Phone</td><td style="padding: 12px; border-bottom: 1px solid #eee;">${formData.phone}</td></tr>
             <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Email</td><td style="padding: 12px; border-bottom: 1px solid #eee;">${formData.email}</td></tr>
             <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Event Type</td><td style="padding: 12px; border-bottom: 1px solid #eee;">${formData.event_type}</td></tr>
-            <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Status</td><td style="padding: 12px; border-bottom: 1px solid #eee; color: #E8543A; font-weight: 600;">PENDING — awaiting payment</td></tr>
+            <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Status</td><td style="padding: 12px; border-bottom: 1px solid #eee; color: #E8543A; font-weight: 600;">PENDING — awaiting contact</td></tr>
           </table>
 
           <div style="margin-top: 28px; padding: 16px; background: #FBF6EF; border-left: 4px solid #D4AF37; border-radius: 4px;">
-            <strong>Action required:</strong> Log in to your admin dashboard to confirm this booking after payment is received.
+            <strong>Action required:</strong> Contact the client to confirm availability. Log in to your admin dashboard to manage this reservation.
           </div>
 
           <p style="margin-top: 32px; color: #999; font-size: 12px;">— Baseline Event Centre Booking System</p>
@@ -82,7 +82,6 @@ export async function createBooking(formData: {
     });
   } catch (err) {
     console.error("Admin notification email failed:", err);
-    // Do NOT return failure — booking already saved.
   }
 
   // Send confirmation to the client
@@ -90,24 +89,21 @@ export async function createBooking(formData: {
     await resend.emails.send({
       from: "Baseline Event Centre <bookings@baselineeventcentre.com>",
       to: formData.email,
-      subject: `Booking Request Received — ${hall}`,
+      subject: `Reservation Received — ${hall}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #0B1F3A;">
           <h2 style="color: #0B1F3A;">Thank you, ${formData.name}.</h2>
-          <p>We've received your booking request for <strong>${hall}</strong>.</p>
+          <p>We've received your reservation request for <strong>${hall}</strong>.</p>
 
           <table style="width: 100%; border-collapse: collapse; margin-top: 24px;">
             <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666; width: 40%;">Hall</td><td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: 600;">${hall}</td></tr>
             <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Date</td><td style="padding: 12px; border-bottom: 1px solid #eee; font-weight: 600;">${formData.event_date}</td></tr>
             <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Event</td><td style="padding: 12px; border-bottom: 1px solid #eee;">${formData.event_type}</td></tr>
-            <tr><td style="padding: 12px; border-bottom: 1px solid #eee; color: #666;">Status</td><td style="padding: 12px; border-bottom: 1px solid #eee; color: #E8543A; font-weight: 600;">Awaiting deposit payment</td></tr>
           </table>
 
           <div style="margin-top: 28px; padding: 16px; background: #FBF6EF; border-left: 4px solid #D4AF37; border-radius: 4px;">
-            <strong>Next step:</strong> Transfer the caution fee to the bank account shown on the website to lock in your date.
+            <strong>What happens next:</strong> Our team will contact you shortly to confirm availability and discuss next steps. No action is needed from you right now.
           </div>
-
-          <p style="margin-top: 24px;">Once payment is confirmed, you'll receive a final confirmation email.</p>
 
           <p style="margin-top: 32px; color: #666;">Warm regards,<br/><strong>Baseline Event Centre</strong><br/>Your Event, Our Priority</p>
         </div>
