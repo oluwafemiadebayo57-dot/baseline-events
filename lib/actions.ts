@@ -188,14 +188,152 @@ export async function getBlockedDates() {
   return data ?? [];
 }
 
+// Change a booking's status and send the appropriate email to the client.
 export async function updateBookingStatus(id: string, status: string) {
   const supabase = getAdminClient();
+
+  // 1. Update the status in the database
   const { error } = await supabase
     .from("bookings")
     .update({ status })
     .eq("id", id);
+
   if (error) return { success: false, error: error.message };
+
+  // 2. If it was confirmed or cancelled, email the client
+  if (status === "confirmed" || status === "cancelled") {
+    const { data: booking } = await supabase
+      .from("bookings")
+      .select("*")
+      .eq("id", id)
+      .single();
+
+    if (booking && booking.email) {
+      const hall = hallName(booking.hall_slug);
+
+      if (status === "confirmed") {
+        await sendConfirmedEmail(booking, hall);
+      } else if (status === "cancelled") {
+        await sendCancelledEmail(booking, hall);
+      }
+    }
+  }
+
   return { success: true };
+}
+
+// ---------- Email helpers for status changes ----------
+
+async function sendConfirmedEmail(
+  booking: {
+    name: string;
+    email: string;
+    phone: string;
+    event_date: string;
+    event_type: string;
+  },
+  hall: string
+) {
+  try {
+    await resend.emails.send({
+      from: "Baseline Event Centre <bookings@baselineeventcentre.com>",
+      to: booking.email,
+      subject: `✅ Reservation Confirmed — ${hall} on ${booking.event_date}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #0B1F3A;">
+          <div style="background: #0B1F3A; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
+            <h1 style="color: #D4AF37; margin: 0; font-family: Georgia, serif; font-size: 24px;">Baseline Event Centre</h1>
+          </div>
+
+          <div style="padding: 32px 24px;">
+            <h2 style="color: #0B1F3A; margin-top: 0;">Great news, ${booking.name}!</h2>
+            <p style="color: #333; font-size: 16px; line-height: 1.6;">
+              Your reservation at Baseline Event Centre is <strong style="color: #28a745;">confirmed</strong>. We look forward to hosting your event.
+            </p>
+
+            <table style="width: 100%; border-collapse: collapse; margin-top: 28px; background: #FBF6EF; border-radius: 8px;">
+              <tr><td style="padding: 14px 20px; color: #666; width: 40%;">Hall</td><td style="padding: 14px 20px; font-weight: 600;">${hall}</td></tr>
+              <tr><td style="padding: 14px 20px; color: #666; border-top: 1px solid #eee;">Date</td><td style="padding: 14px 20px; font-weight: 600; border-top: 1px solid #eee;">${booking.event_date}</td></tr>
+              <tr><td style="padding: 14px 20px; color: #666; border-top: 1px solid #eee;">Event Type</td><td style="padding: 14px 20px; border-top: 1px solid #eee;">${booking.event_type}</td></tr>
+            </table>
+
+            <div style="margin-top: 28px; padding: 16px; background: #FBF6EF; border-left: 4px solid #D4AF37; border-radius: 4px;">
+              <strong style="color: #0B1F3A;">📍 Location:</strong>
+              <p style="margin: 8px 0 0; color: #333;">8 Gaga Road, Off Idanre Garage, Oke-Aro, Ondo State</p>
+            </div>
+
+            <p style="margin-top: 28px; color: #333; font-size: 16px; line-height: 1.6;">
+              If you have any questions or need to discuss arrangements, call us on <strong>0812 667 1066</strong> or simply reply to this email.
+            </p>
+
+            <p style="margin-top: 32px; color: #666;">
+              Warm regards,<br/>
+              <strong style="color: #0B1F3A;">Baseline Event Centre</strong><br/>
+              <em style="color: #D4AF37;">Your Event, Our Priority</em>
+            </p>
+          </div>
+
+          <div style="background: #FBF6EF; padding: 16px; text-align: center; font-size: 12px; color: #999; border-radius: 0 0 8px 8px;">
+            © ${new Date().getFullYear()} Baseline Event Centre. All rights reserved.
+          </div>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("Confirmed email failed:", err);
+  }
+}
+
+async function sendCancelledEmail(
+  booking: {
+    name: string;
+    email: string;
+    event_date: string;
+  },
+  hall: string
+) {
+  try {
+    await resend.emails.send({
+      from: "Baseline Event Centre <bookings@baselineeventcentre.com>",
+      to: booking.email,
+      subject: `Reservation Update — ${hall} on ${booking.event_date}`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #0B1F3A;">
+          <div style="background: #0B1F3A; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
+            <h1 style="color: #D4AF37; margin: 0; font-family: Georgia, serif; font-size: 24px;">Baseline Event Centre</h1>
+          </div>
+
+          <div style="padding: 32px 24px;">
+            <h2 style="color: #0B1F3A; margin-top: 0;">Hello ${booking.name},</h2>
+            <p style="color: #333; font-size: 16px; line-height: 1.6;">
+              We're writing to let you know that your reservation for <strong>${hall}</strong> on <strong>${booking.event_date}</strong> has been cancelled.
+            </p>
+
+            <p style="color: #333; font-size: 16px; line-height: 1.6;">
+              If this is unexpected, or if you'd like to discuss alternative dates, please contact us as soon as possible:
+            </p>
+
+            <div style="margin-top: 28px; padding: 16px; background: #FBF6EF; border-left: 4px solid #D4AF37; border-radius: 4px;">
+              <p style="margin: 0; color: #333;">📞 <strong>0812 667 1066</strong></p>
+              <p style="margin: 8px 0 0; color: #333;">✉️ Reply to this email</p>
+            </div>
+
+            <p style="margin-top: 32px; color: #666;">
+              We hope to have the opportunity to host your event in the future.<br/><br/>
+              Warm regards,<br/>
+              <strong style="color: #0B1F3A;">Baseline Event Centre</strong>
+            </p>
+          </div>
+
+          <div style="background: #FBF6EF; padding: 16px; text-align: center; font-size: 12px; color: #999; border-radius: 0 0 8px 8px;">
+            © ${new Date().getFullYear()} Baseline Event Centre. All rights reserved.
+          </div>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("Cancelled email failed:", err);
+  }
 }
 
 export async function toggleBlockedDate(date: string, reason?: string) {
