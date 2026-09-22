@@ -116,7 +116,7 @@ export async function createBooking(formData: {
   return { success: true };
 }
 
-// Read the settings row (bank details etc.)
+// Read the settings row.
 export async function getSettings() {
   const supabase = getAdminClient();
   const { data, error } = await supabase.from("settings").select("*").single();
@@ -127,14 +127,15 @@ export async function getSettings() {
   return data;
 }
 
-// Get all booked dates (bookings + blocked dates).
+// Get all booked dates — ONLY confirmed bookings block a date.
+// Pending reservations don't block (multiple people can request the same date).
 export async function getBookedDates(): Promise<string[]> {
   const supabase = getAdminClient();
 
   const { data: bookings, error: e1 } = await supabase
     .from("bookings")
     .select("event_date")
-    .in("status", ["pending", "confirmed"]);
+    .eq("status", "confirmed");
 
   const { data: blocked, error: e2 } = await supabase
     .from("blocked_dates")
@@ -192,7 +193,6 @@ export async function getBlockedDates() {
 export async function updateBookingStatus(id: string, status: string) {
   const supabase = getAdminClient();
 
-  // 1. Update the status in the database
   const { error } = await supabase
     .from("bookings")
     .update({ status })
@@ -200,7 +200,6 @@ export async function updateBookingStatus(id: string, status: string) {
 
   if (error) return { success: false, error: error.message };
 
-  // 2. If it was confirmed or cancelled, email the client
   if (status === "confirmed" || status === "cancelled") {
     const { data: booking } = await supabase
       .from("bookings")
@@ -411,6 +410,8 @@ export async function getHallBySlug(slug: string) {
   return data;
 }
 
+// Get booked dates for a specific hall.
+// ONLY confirmed bookings block the date.
 export async function getBookedDatesForHall(hallSlug: string): Promise<string[]> {
   const supabase = getAdminClient();
 
@@ -418,7 +419,7 @@ export async function getBookedDatesForHall(hallSlug: string): Promise<string[]>
     .from("bookings")
     .select("event_date")
     .eq("hall_slug", hallSlug)
-    .in("status", ["pending", "confirmed"]);
+    .eq("status", "confirmed");
 
   const { data: blocked, error: e2 } = await supabase
     .from("blocked_dates")
