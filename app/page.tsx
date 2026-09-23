@@ -14,8 +14,6 @@ type Hall = {
   tagline: string | null;
   capacity_conf: number;
   capacity_banq: number;
-  rental_price: number;
-  caution_fee: number;
   image_url: string | null;
   gallery: string[] | null;
 };
@@ -45,7 +43,7 @@ const FALLBACK_IMAGES: Record<string, string> = {
 export const metadata: Metadata = {
   title: "Event Centre in Akure — Weddings, Conferences & Banquets",
   description:
-    "Baseline Event Centre — Akure's top choice for weddings, conferences, banquets, and celebrations. Two premium halls: The Grand Ballroom (1,000 guests) and The Mini Ballroom (150 guests). Book online in minutes.",
+    "Baseline Event Centre — Akure's top choice for weddings, conferences, banquets, and celebrations. Two premium halls: The Grand Ballroom (1,000 guests) and The Mini Ballroom (150 guests). Reserve online in minutes.",
   keywords: [
     "event centre in Akure",
     "event hall Akure",
@@ -57,7 +55,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Baseline Event Centre — Akure's Premier Event Venue",
     description:
-      "Two premium halls for weddings, conferences, and celebrations. Book online in minutes.",
+      "Two premium halls for weddings, conferences, and celebrations. Reserve online in minutes.",
     url: "https://baselineeventcentre.com",
     siteName: "Baseline Event Centre",
     locale: "en_NG",
@@ -93,7 +91,7 @@ export default async function HomePage() {
           </h1>
           <p className="mt-6 max-w-2xl text-lg text-cream/80 animate-fade-up">
             Two premium halls for weddings, conferences, banquets, and
-            celebrations. Check availability and lock your date online — in
+            celebrations. Check availability and reserve your date online — in
             minutes.
           </p>
           <div className="mt-10 flex flex-col gap-4 sm:flex-row">
@@ -128,7 +126,7 @@ export default async function HomePage() {
               {
                 icon: "🏛️",
                 title: "Two Premium Halls",
-                text: "The Big Hall seats 1,000. The Small Hall holds 150. Pick the space that fits your event.",
+                text: "The Grand Ballroom seats 1,000. The Mini Ballroom holds 150. Pick the space that fits your event.",
               },
               {
                 icon: "⚡",
@@ -203,15 +201,7 @@ export default async function HomePage() {
                     </div>
                   </div>
 
-                  <div className="mt-6 flex items-end justify-between border-t border-navy/10 pt-6">
-                    <div>
-                      <div className="text-xs uppercase tracking-wider text-navy/50">
-                        From
-                      </div>
-                      <div className="font-heading text-2xl font-bold text-gold">
-                        ₦{fmt(hall.rental_price)}
-                      </div>
-                    </div>
+                  <div className="mt-6 border-t border-navy/10 pt-6">
                     <span className="text-sm font-semibold text-navy group-hover:text-gold">
                       View details →
                     </span>
@@ -293,17 +283,17 @@ export default async function HomePage() {
       <section className="bg-gold py-24 text-center text-navy">
         <div className="mx-auto max-w-3xl px-6">
           <h2 className="font-heading text-4xl font-bold md:text-5xl">
-            Ready to Lock Your Date?
+            Ready to Reserve Your Date?
           </h2>
           <p className="mt-4 text-lg text-navy/80">
             Check availability in real time. Pick your hall, choose your date,
-            pay a small caution fee.
+            send us your details.
           </p>
           <Link
             href="/booking"
             className="mt-10 inline-block rounded-full bg-navy px-10 py-4 text-lg font-semibold text-cream shadow-xl transition-transform hover:scale-105"
           >
-            Book Your Event →
+            Reserve Your Event →
           </Link>
         </div>
       </section>

@@ -1,5 +1,5 @@
 // app/halls/page.tsx
-// Showcase page — both halls side by side with their real facilities, images, and prices.
+// Showcase page — both halls side by side with their real facilities and images.
 
 import Link from "next/link";
 import Image from "next/image";
@@ -13,8 +13,6 @@ type Hall = {
   tagline: string | null;
   capacity_conf: number;
   capacity_banq: number;
-  rental_price: number;
-  caution_fee: number;
   facilities: string[];
   image_url: string | null;
   gallery: string[] | null;
@@ -25,7 +23,7 @@ const fmt = (n: number) => n.toLocaleString("en-NG");
 export const metadata: Metadata = {
   title: "Our Halls — Grand Ballroom & Mini Ballroom",
   description:
-    "Two premium event halls in Akure. The Grand Ballroom seats 1,000 guests for conferences and 600 for banquets. The Mini Ballroom holds 150. See facilities, pricing, and photos.",
+    "Two premium event halls in Akure. The Grand Ballroom seats 1,000 guests for conferences and 600 for banquets. The Mini Ballroom holds 150. See facilities and photos.",
   keywords: [
     "event hall Akure",
     "banquet hall Akure",
@@ -37,7 +35,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Our Halls — Baseline Event Centre, Akure",
     description:
-      "The Grand Ballroom (1,000 guests) and The Mini Ballroom (150 guests). See facilities, pricing, and photos.",
+      "The Grand Ballroom (1,000 guests) and The Mini Ballroom (150 guests). See facilities and photos.",
     url: "https://baselineeventcentre.com/halls",
     siteName: "Baseline Event Centre",
     locale: "en_NG",
@@ -143,27 +141,11 @@ export default async function HallsPage() {
                   </ul>
                 </div>
 
-                {/* Pricing */}
-                <div className="mt-8 space-y-3 rounded-2xl bg-navy p-6 text-cream">
-                  <div className="flex items-center justify-between">
-                    <span className="text-cream/70">Hall Rental</span>
-                    <span className="font-heading text-2xl font-bold text-gold">
-                      ₦{fmt(hall.rental_price)}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between border-t border-cream/10 pt-3">
-                    <span className="text-cream/70">Caution Fee</span>
-                    <span className="font-heading text-xl font-semibold text-cream">
-                      ₦{fmt(hall.caution_fee)}
-                    </span>
-                  </div>
-                </div>
-
                 <Link
                   href="/booking"
-                  className="mt-6 inline-block rounded-full bg-gold px-8 py-4 font-semibold text-navy shadow-lg transition-transform hover:scale-105"
+                  className="mt-8 inline-block rounded-full bg-gold px-8 py-4 font-semibold text-navy shadow-lg transition-transform hover:scale-105"
                 >
-                  Book {hall.name} →
+                  Reserve {hall.name} →
                 </Link>
               </div>
             </div>
@@ -238,14 +220,14 @@ export default async function HallsPage() {
             Ready to see them in person?
           </h2>
           <p className="mt-4 text-navy/70">
-            Book a viewing, or lock your date online right now.
+            Book a viewing, or reserve your date online right now.
           </p>
           <div className="mt-8 flex flex-col justify-center gap-4 sm:flex-row">
             <Link
               href="/booking"
               className="rounded-full bg-gold px-8 py-4 font-semibold text-navy shadow-lg transition-transform hover:scale-105"
             >
-              Book Your Date →
+              Reserve Your Date →
             </Link>
             <Link
               href="/contact"

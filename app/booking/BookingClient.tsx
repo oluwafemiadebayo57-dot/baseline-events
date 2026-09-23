@@ -22,8 +22,6 @@ type Hall = {
   tagline: string | null;
   capacity_conf: number;
   capacity_banq: number;
-  rental_price: number;
-  caution_fee: number;
   facilities: string[];
   image_url: string | null;
 };
@@ -211,16 +209,8 @@ export default function BookingClient() {
                       {active && <span className="text-2xl text-gold">✓</span>}
                     </div>
                     <p className="mt-1 text-sm text-navy/60">{hall.tagline}</p>
-                    <div className="mt-4 space-y-1 text-sm">
-                      <div className="text-navy/80">
-                        👥 Up to <strong>{fmt(hall.capacity_conf)}</strong> guests
-                      </div>
-                      <div className="text-navy/80">
-                        💰 <strong>₦{fmt(hall.rental_price)}</strong> rental
-                      </div>
-                      <div className="text-navy/80">
-                        🔒 <strong>₦{fmt(hall.caution_fee)}</strong> caution fee
-                      </div>
+                    <div className="mt-4 text-sm text-navy/80">
+                      👥 Up to <strong>{fmt(hall.capacity_conf)}</strong> guests
                     </div>
                   </div>
                 </button>
