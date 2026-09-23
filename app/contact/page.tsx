@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     title: "Contact Us — Baseline Event Centre, Akure",
     description:
       "Visit us at 8 Gaga Road, Off Idanre Garage, Oke-Aro, Akure. Call 0812 667 1066 or book online.",
-    url: "https://baselineeventcentre.com/contact",
+    url: "https://www.baselineeventcentre.com/contact",
     siteName: "Baseline Event Centre",
     locale: "en_NG",
     type: "website",

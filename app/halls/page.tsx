@@ -36,7 +36,7 @@ export const metadata: Metadata = {
     title: "Our Halls — Baseline Event Centre, Akure",
     description:
       "The Grand Ballroom (1,000 guests) and The Mini Ballroom (150 guests). See facilities and photos.",
-    url: "https://baselineeventcentre.com/halls",
+    url: "https://www.baselineeventcentre.com/halls",
     siteName: "Baseline Event Centre",
     locale: "en_NG",
     type: "website",

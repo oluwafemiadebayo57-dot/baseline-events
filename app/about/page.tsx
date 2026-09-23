@@ -25,7 +25,7 @@ export const metadata: Metadata = {
     title: "About Baseline Event Centre — Akure's Premier Event Venue",
     description:
       "Two premium halls for weddings, conferences, and celebrations in Akure, Ondo State.",
-    url: "https://baselineeventcentre.com/about",
+    url: "https://www.baselineeventcentre.com/about",
     siteName: "Baseline Event Centre",
     locale: "en_NG",
     type: "website",

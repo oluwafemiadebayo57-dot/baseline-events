@@ -24,7 +24,7 @@ const inter = Inter({
 
 // Shows in the browser tab + Google search results.
 export const metadata: Metadata = {
-  metadataBase: new URL("https://baselineeventcentre.com"),
+  metadataBase: new URL("https://www.baselineeventcentre.com"),
   title: {
     default: "Baseline Event Centre | Akure's Premier Event Venue",
     template: "%s | Baseline Event Centre",
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
     title: "Baseline Event Centre — Akure's Premier Event Venue",
     description:
       "Two premium halls for weddings, conferences, and celebrations. Book online in minutes.",
-    url: "https://baselineeventcentre.com",
+    url: "https://www.baselineeventcentre.com",
     siteName: "Baseline Event Centre",
     locale: "en_NG",
     type: "website",
@@ -76,7 +76,7 @@ const jsonLd = {
     addressCountry: "NG",
   },
   telephone: "+2348126671066",
-  url: "https://baselineeventcentre.com",
+  url: "https://www.baselineeventcentre.com",
   image:
     "https://res.cloudinary.com/izxlyyn5/image/upload/v1789753151/OPT_6114.jpg",
   priceRange: "₦₦₦",

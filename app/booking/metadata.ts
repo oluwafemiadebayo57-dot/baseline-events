@@ -21,7 +21,7 @@ export const metadata: Metadata = {
       "Book Your Date — Baseline Event Centre, Akure",
     description:
       "Real-time availability for The Grand Ballroom and The Mini Ballroom. Book online in minutes.",
-    url: "https://baselineeventcentre.com/booking",
+    url: "https://www.baselineeventcentre.com/booking",
     siteName: "Baseline Event Centre",
     locale: "en_NG",
     type: "website",

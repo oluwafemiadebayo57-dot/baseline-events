@@ -56,7 +56,7 @@ export const metadata: Metadata = {
     title: "Baseline Event Centre — Akure's Premier Event Venue",
     description:
       "Two premium halls for weddings, conferences, and celebrations. Reserve online in minutes.",
-    url: "https://baselineeventcentre.com",
+    url: "https://www.baselineeventcentre.com",
     siteName: "Baseline Event Centre",
     locale: "en_NG",
     type: "website",

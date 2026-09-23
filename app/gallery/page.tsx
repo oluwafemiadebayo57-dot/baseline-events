@@ -18,7 +18,7 @@ export const metadata: Metadata = {
     title: "Gallery — Baseline Event Centre, Akure",
     description:
       "29 real photos of our halls, lounge, facilities, and grounds. See the space before you book.",
-    url: "https://baselineeventcentre.com/gallery",
+    url: "https://www.baselineeventcentre.com/gallery",
     siteName: "Baseline Event Centre",
     locale: "en_NG",
     type: "website",
