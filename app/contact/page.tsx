@@ -4,6 +4,10 @@
 import { getSettings } from "@/lib/actions";
 import type { Metadata } from "next";
 
+// Force Next.js to fetch fresh data on every request instead of caching
+// the page at build time. Ensures settings changes appear immediately.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Contact Us — Visit Baseline Event Centre, Akure",
   description:
