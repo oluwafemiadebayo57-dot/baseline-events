@@ -8,7 +8,9 @@ export default async function Footer() {
   const settings = await getSettings();
 
   const phone = settings?.phone ?? "0812 667 1066";
-  const email = settings?.email ?? "info@baseline-events-centre.com";
+  const email = settings?.email ?? "info@baselineeventcentre.com";
+  const emailAlt =
+    settings?.email_alt ?? "baselineeventcenter@gmail.com";
   const address =
     settings?.address ??
     "8 Gaga Road, Off Idanre Garage, Oke-Aro, Ondo State";
@@ -77,6 +79,17 @@ export default async function Footer() {
                 {email}
               </a>
             </li>
+            {emailAlt && emailAlt !== email && (
+              <li>
+                ✉️{" "}
+                <a
+                  href={`mailto:${emailAlt}`}
+                  className="hover:text-gold break-words"
+                >
+                  {emailAlt}
+                </a>
+              </li>
+            )}
             <li>
               💬{" "}
               <a

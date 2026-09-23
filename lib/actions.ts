@@ -444,6 +444,7 @@ export async function updateSettings(data: {
   deposit_amount?: string;
   phone?: string;
   email?: string;
+  email_alt?: string;
   address?: string;
   tagline?: string;
 }) {

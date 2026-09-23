@@ -3,6 +3,7 @@
 
 import { getSettings } from "@/lib/actions";
 import type { Metadata } from "next";
+
 export const metadata: Metadata = {
   title: "Contact Us — Visit Baseline Event Centre, Akure",
   description:
@@ -28,7 +29,9 @@ export default async function ContactPage() {
   const settings = await getSettings();
 
   const phone = settings?.phone ?? "0812 667 1066";
-  const email = settings?.email ?? "info@baseline-events-centre.com";
+  const email = settings?.email ?? "info@baselineeventcentre.com";
+  const emailAlt =
+    settings?.email_alt ?? "baselineeventcenter@gmail.com";
   const address =
     settings?.address ??
     "8 Gaga Road, Off Idanre Garage, Oke-Aro, Ondo State";
@@ -81,18 +84,28 @@ export default async function ContactPage() {
             </a>
           </div>
 
-          {/* Email */}
+          {/* Email — shows both primary and secondary */}
           <div className="rounded-2xl bg-white p-8 text-center shadow-sm transition-shadow hover:shadow-lg">
             <div className="text-4xl">✉️</div>
             <h3 className="mt-4 font-heading text-xl font-semibold text-navy">
               Email Us
             </h3>
-            <a
-              href={`mailto:${email}`}
-              className="mt-3 block text-sm text-navy/70 hover:text-gold break-words"
-            >
-              {email}
-            </a>
+            <div className="mt-3 space-y-1">
+              <a
+                href={`mailto:${email}`}
+                className="block text-sm text-navy/70 hover:text-gold break-words"
+              >
+                {email}
+              </a>
+              {emailAlt && emailAlt !== email && (
+                <a
+                  href={`mailto:${emailAlt}`}
+                  className="block text-sm text-navy/70 hover:text-gold break-words"
+                >
+                  {emailAlt}
+                </a>
+              )}
+            </div>
           </div>
         </div>
 

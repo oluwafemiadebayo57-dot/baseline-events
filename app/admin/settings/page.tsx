@@ -27,6 +27,7 @@ export default function SettingsPage() {
     deposit_amount: "",
     phone: "",
     email: "",
+    email_alt: "",
     address: "",
     tagline: "",
   });
@@ -49,6 +50,7 @@ export default function SettingsPage() {
           deposit_amount: data.deposit_amount ?? "",
           phone: data.phone ?? "",
           email: data.email ?? "",
+          email_alt: data.email_alt ?? "",
           address: data.address ?? "",
           tagline: data.tagline ?? "",
         });
@@ -94,7 +96,7 @@ export default function SettingsPage() {
               🏦 Bank Details
             </h2>
             <p className="mt-1 text-sm text-navy/60">
-              Clients see this after booking. Keep it accurate.
+              Used internally for reference — not shown on the public site.
             </p>
             <div className="mt-4 grid gap-4 md:grid-cols-2">
               <Field
@@ -137,10 +139,16 @@ export default function SettingsPage() {
                 placeholder="0812 667 1066"
               />
               <Field
-                label="Email"
+                label="Primary Email"
                 value={form.email}
                 onChange={(v) => setForm({ ...form, email: v })}
-                placeholder="info@baseline-events-centre.com"
+                placeholder="info@baselineeventcentre.com"
+              />
+              <Field
+                label="Secondary Email (optional)"
+                value={form.email_alt}
+                onChange={(v) => setForm({ ...form, email_alt: v })}
+                placeholder="baselineeventcenter@gmail.com"
               />
               <div className="md:col-span-2">
                 <Field
@@ -193,7 +201,6 @@ export default function SettingsPage() {
 }
 
 // ---------- Small helper component ----------
-// Avoids repeating input markup 8 times.
 function Field({
   label,
   value,
