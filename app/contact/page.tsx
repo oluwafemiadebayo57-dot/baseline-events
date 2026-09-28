@@ -159,7 +159,7 @@ export default async function ContactPage() {
 
             {/* Facebook */}
             <a
-              href="https://facebook.com/baselineeventcentre"
+              href="https://www.facebook.com/profile.php?id=61594481918368"
               target="_blank"
               rel="noopener noreferrer"
               className="group flex flex-col items-center rounded-2xl border border-navy/10 bg-white p-8 text-center shadow-sm transition-all hover:-translate-y-1 hover:border-gold hover:shadow-lg"
@@ -171,7 +171,7 @@ export default async function ContactPage() {
                 Facebook
               </h3>
               <p className="mt-1 text-sm text-navy/60">
-                Baseline Event Centre
+                Baseline Event Center | Akure
               </p>
             </a>
 
