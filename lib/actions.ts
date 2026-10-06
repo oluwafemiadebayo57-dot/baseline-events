@@ -456,3 +456,100 @@ export async function updateSettings(data: {
   if (error) return { success: false, error: error.message };
   return { success: true };
 }
+// ---------- CANCELLED BOOKING MANAGEMENT ----------
+
+// Permanently delete a booking from the database.
+export async function deleteBooking(id: string) {
+  const supabase = getAdminClient();
+  const { error } = await supabase.from("bookings").delete().eq("id", id);
+  if (error) return { success: false, error: error.message };
+  return { success: true };
+}
+
+// Restore a cancelled booking back to pending status and email the client.
+export async function restoreBooking(id: string) {
+  const supabase = getAdminClient();
+
+  // 1. Update the status
+  const { error } = await supabase
+    .from("bookings")
+    .update({ status: "pending" })
+    .eq("id", id);
+
+  if (error) return { success: false, error: error.message };
+
+  // 2. Fetch full booking for email
+  const { data: booking } = await supabase
+    .from("bookings")
+    .select("*")
+    .eq("id", id)
+    .single();
+
+  if (booking && booking.email) {
+    const hall = hallName(booking.hall_slug);
+    await sendRestoredEmail(booking, hall);
+  }
+
+  return { success: true };
+}
+
+// ---------- Email helper: restored booking ----------
+
+async function sendRestoredEmail(
+  booking: {
+    name: string;
+    email: string;
+    event_date: string;
+    event_type: string;
+  },
+  hall: string
+) {
+  try {
+    await resend.emails.send({
+      from: "Baseline Event Centre <bookings@baselineeventcentre.com>",
+      to: booking.email,
+      subject: `Good News — Your Reservation Has Been Restored`,
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; color: #0B1F3A;">
+          <div style="background: #0B1F3A; padding: 24px; text-align: center; border-radius: 8px 8px 0 0;">
+            <h1 style="color: #D4AF37; margin: 0; font-family: Georgia, serif; font-size: 24px;">Baseline Event Centre</h1>
+          </div>
+
+          <div style="padding: 32px 24px;">
+            <h2 style="color: #0B1F3A; margin-top: 0;">Great news, ${booking.name}!</h2>
+            <p style="color: #333; font-size: 16px; line-height: 1.6;">
+              Your reservation at Baseline Event Centre has been <strong style="color: #28a745;">restored</strong>. We&apos;re glad to have you back.
+            </p>
+
+            <table style="width: 100%; border-collapse: collapse; margin-top: 28px; background: #FBF6EF; border-radius: 8px;">
+              <tr><td style="padding: 14px 20px; color: #666; width: 40%;">Hall</td><td style="padding: 14px 20px; font-weight: 600;">${hall}</td></tr>
+              <tr><td style="padding: 14px 20px; color: #666; border-top: 1px solid #eee;">Date</td><td style="padding: 14px 20px; font-weight: 600; border-top: 1px solid #eee;">${booking.event_date}</td></tr>
+              <tr><td style="padding: 14px 20px; color: #666; border-top: 1px solid #eee;">Event Type</td><td style="padding: 14px 20px; border-top: 1px solid #eee;">${booking.event_type}</td></tr>
+            </table>
+
+            <div style="margin-top: 28px; padding: 16px; background: #FBF6EF; border-left: 4px solid #D4AF37; border-radius: 4px;">
+              <strong style="color: #0B1F3A;">What happens next:</strong>
+              <p style="margin: 8px 0 0; color: #333;">Our team will contact you shortly to confirm availability and finalize your reservation.</p>
+            </div>
+
+            <p style="margin-top: 28px; color: #333; font-size: 16px; line-height: 1.6;">
+              If you have any questions, call us on <strong>0812 667 1066</strong> or simply reply to this email.
+            </p>
+
+            <p style="margin-top: 32px; color: #666;">
+              Warm regards,<br/>
+              <strong style="color: #0B1F3A;">Baseline Event Centre</strong><br/>
+              <em style="color: #D4AF37;">Your Event, Our Priority</em>
+            </p>
+          </div>
+
+          <div style="background: #FBF6EF; padding: 16px; text-align: center; font-size: 12px; color: #999; border-radius: 0 0 8px 8px;">
+            © ${new Date().getFullYear()} Baseline Event Centre. All rights reserved.
+          </div>
+        </div>
+      `,
+    });
+  } catch (err) {
+    console.error("Restored email failed:", err);
+  }
+}

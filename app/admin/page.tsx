@@ -1,6 +1,5 @@
 // app/admin/page.tsx
 // Admin dashboard — the owner's control panel.
-// Shows all bookings, lets admin confirm/cancel, block dates.
 
 "use client";
 
@@ -14,6 +13,8 @@ import {
   getBlockedDates,
   toggleBlockedDate,
   createAdminBooking,
+  deleteBooking,
+  restoreBooking,
 } from "@/lib/actions";
 
 type Booking = {
@@ -28,6 +29,8 @@ type Booking = {
   status: "pending" | "confirmed" | "cancelled";
 };
 
+type FilterTab = "all" | "pending" | "confirmed" | "cancelled";
+
 export default function AdminDashboard() {
   const router = useRouter();
   const supabase = createClient();
@@ -36,6 +39,7 @@ export default function AdminDashboard() {
   const [blocked, setBlocked] = useState<{ id: string; date: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [showAddForm, setShowAddForm] = useState(false);
+  const [filterTab, setFilterTab] = useState<FilterTab>("all");
   const [addForm, setAddForm] = useState({
     event_date: "",
     name: "",
@@ -76,6 +80,23 @@ export default function AdminDashboard() {
     await refresh();
   }
 
+  async function handleRestore(id: string) {
+    if (!confirm("Restore this booking? It will be set back to pending.")) return;
+    await restoreBooking(id);
+    await refresh();
+  }
+
+  async function handleDelete(id: string) {
+    if (
+      !confirm(
+        "Permanently delete this booking? This cannot be undone."
+      )
+    )
+      return;
+    await deleteBooking(id);
+    await refresh();
+  }
+
   async function handleUnblock(id: string) {
     const b = blocked.find((x) => x.id === id);
     if (!b) return;
@@ -113,6 +134,27 @@ export default function AdminDashboard() {
     );
   }
 
+  // Filtered bookings based on active tab
+  const filteredBookings = bookings.filter((b) => {
+    if (filterTab === "all") return b.status !== "cancelled";
+    return b.status === filterTab;
+  });
+
+  // Counts per status
+  const counts = {
+    all: bookings.filter((b) => b.status !== "cancelled").length,
+    pending: bookings.filter((b) => b.status === "pending").length,
+    confirmed: bookings.filter((b) => b.status === "confirmed").length,
+    cancelled: bookings.filter((b) => b.status === "cancelled").length,
+  };
+
+  const tabs: { key: FilterTab; label: string }[] = [
+    { key: "all", label: "Active" },
+    { key: "pending", label: "Pending" },
+    { key: "confirmed", label: "Confirmed" },
+    { key: "cancelled", label: "Cancelled" },
+  ];
+
   return (
     <main className="min-h-screen bg-cream">
       <AdminHeader />
@@ -122,13 +164,13 @@ export default function AdminDashboard() {
         <div className="grid gap-4 sm:grid-cols-3">
           <div className="rounded-2xl bg-white p-6 shadow-sm">
             <div className="text-3xl font-bold text-gold">
-              {bookings.filter((b) => b.status === "pending").length}
+              {counts.pending}
             </div>
             <div className="mt-1 text-sm text-navy/60">Pending</div>
           </div>
           <div className="rounded-2xl bg-white p-6 shadow-sm">
             <div className="text-3xl font-bold text-green-600">
-              {bookings.filter((b) => b.status === "confirmed").length}
+              {counts.confirmed}
             </div>
             <div className="mt-1 text-sm text-navy/60">Confirmed</div>
           </div>
@@ -155,6 +197,34 @@ export default function AdminDashboard() {
             >
               {showAddForm ? "✕ Cancel" : "+ Add Booking"}
             </button>
+          </div>
+
+          {/* Filter tabs */}
+          <div className="mt-6 flex flex-wrap gap-2 border-b border-navy/10">
+            {tabs.map((tab) => {
+              const active = filterTab === tab.key;
+              const count = counts[tab.key];
+              return (
+                <button
+                  key={tab.key}
+                  onClick={() => setFilterTab(tab.key)}
+                  className={`relative -mb-px border-b-2 px-4 py-2 text-sm font-semibold transition-colors ${
+                    active
+                      ? "border-gold text-navy"
+                      : "border-transparent text-navy/50 hover:text-navy"
+                  }`}
+                >
+                  {tab.label}
+                  <span
+                    className={`ml-2 rounded-full px-2 py-0.5 text-xs ${
+                      active ? "bg-gold text-navy" : "bg-navy/10 text-navy/60"
+                    }`}
+                  >
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
           {/* Add booking form */}
@@ -253,13 +323,20 @@ export default function AdminDashboard() {
             </form>
           )}
 
-          {bookings.length === 0 ? (
+          {/* Bookings */}
+          {filteredBookings.length === 0 ? (
             <div className="mt-6 rounded-2xl bg-white p-10 text-center text-navy/50 shadow-sm">
-              No bookings yet.
+              {filterTab === "cancelled"
+                ? "No cancelled bookings."
+                : filterTab === "pending"
+                  ? "No pending bookings."
+                  : filterTab === "confirmed"
+                    ? "No confirmed bookings."
+                    : "No bookings yet."}
             </div>
           ) : (
             <div className="mt-6 space-y-3">
-              {bookings.map((b) => (
+              {filteredBookings.map((b) => (
                 <div
                   key={b.id}
                   className="rounded-2xl bg-white p-5 shadow-sm transition-shadow hover:shadow-md"
@@ -299,20 +376,44 @@ export default function AdminDashboard() {
 
                     <div className="flex gap-2">
                       {b.status === "pending" && (
-                        <button
-                          onClick={() => handleConfirm(b.id)}
-                          className="rounded-full bg-gold px-5 py-2 text-sm font-semibold text-navy hover:opacity-90"
-                        >
-                          ✓ Confirm
-                        </button>
+                        <>
+                          <button
+                            onClick={() => handleConfirm(b.id)}
+                            className="rounded-full bg-gold px-5 py-2 text-sm font-semibold text-navy hover:opacity-90"
+                          >
+                            ✓ Confirm
+                          </button>
+                          <button
+                            onClick={() => handleCancel(b.id)}
+                            className="rounded-full border border-red-300 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                          >
+                            Cancel
+                          </button>
+                        </>
                       )}
-                      {b.status !== "cancelled" && (
+                      {b.status === "confirmed" && (
                         <button
                           onClick={() => handleCancel(b.id)}
                           className="rounded-full border border-red-300 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                         >
                           Cancel
                         </button>
+                      )}
+                      {b.status === "cancelled" && (
+                        <>
+                          <button
+                            onClick={() => handleRestore(b.id)}
+                            className="rounded-full border border-navy/20 px-4 py-2 text-sm text-navy hover:bg-navy hover:text-cream"
+                          >
+                            ↺ Restore
+                          </button>
+                          <button
+                            onClick={() => handleDelete(b.id)}
+                            className="rounded-full border border-red-300 bg-red-50 px-4 py-2 text-sm text-red-600 hover:bg-red-100"
+                          >
+                            🗑 Delete
+                          </button>
+                        </>
                       )}
                     </div>
                   </div>
